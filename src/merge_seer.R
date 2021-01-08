@@ -40,6 +40,9 @@ read_data <- function(filename, radix=1e5){
                                 Death.Rate=Rate,
                                 Death.Lower=Lower,
                                 Death.Upper=Upper)
+        dset <- dset %>% mutate(Death.Rate=Death.Rate*Population,
+                                Death.Lower=Death.Lower*Population,
+                                Death.Upper=Death.Upper*Population)
         dset <- dset %>% select(-Population)
     }
     return(dset)
@@ -52,6 +55,9 @@ control <- function(incfile, ibmfile, saveit=FALSE){
     iset <- read_data(incfile)
     mset <- read_data(ibmfile)
     dset <- full_join(iset, mset, by=c('Age', 'Site'))
+    dset <- dset %>% mutate(Death.Rate=Death.Count/Population,
+                            Death.Lower=Death.Lower/Population,
+                            Death.Upper=Death.Upper/Population)
     dset <- dset %>% select(Age,
                             Site,
                             Population,
