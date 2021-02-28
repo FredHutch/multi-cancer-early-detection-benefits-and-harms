@@ -287,7 +287,7 @@ for (a in c(50, 60, 70)) {
   effect.p <- 0.2
   effect.o <- 0.2
 
-  detect.singleforone <-
+  detect <-
     sensitivity.b * PBB * N.b +
     sensitivity.c * PCC * N.c +
     sensitivity.l * PLL * N.l +
