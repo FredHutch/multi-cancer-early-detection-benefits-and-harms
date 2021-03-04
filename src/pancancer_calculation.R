@@ -145,7 +145,7 @@ iset2 <- age_analysis_incremental(sset, c('Breast', 'Lung and Bronchus'))
 iset6 <- age_analysis_incremental(sset, setdiff(pset$site, 'Breast'))
 
 ##################################################
-# Control common plot aesthetics
+# Control plot aesthetics
 ##################################################
 gg_theme <- function(...){
     theme_set(theme_classic())
@@ -161,7 +161,7 @@ gg_theme <- function(...){
 ##################################################
 # Visualize patterns in hypothetical analysis
 ##################################################
-hypothetical_plot <- function(set, ext='png', saveit=FALSE){
+hypothetical_plot <- function(ext='png', saveit=FALSE){
     dset <- bind_rows(analysis1(specificity=0.97),
                       analysis1(specificity=0.98),
                       analysis1(specificity=0.99))
