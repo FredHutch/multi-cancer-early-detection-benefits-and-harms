@@ -7,6 +7,8 @@
 ##################################################
 library(tidyverse)
 library(here)
+library(scales)
+library(viridis)
 
 datestamp <- '2021-03-03'
 
@@ -52,7 +54,8 @@ k_cancer_test <- function(dset, specificity=0.99, effect=0.2, size=1000){
 analysis1 <- function(specificity){
     dset <- expand.grid(prevalence.a=0.001,
                         prevalence.b=c(0.0005, 0.001, 0.005, 0.01),
-                        sensitivity.a=c(0.5, 0.7),
+                        #sensitivity.a=c(0.5, 0.7),
+                        sensitivity.a=seq(0.5, 0.9, by=0.1),
                         localization.a=c(0.5, 0.8),
                         mortality.a=0)
     dset <- dset %>% mutate(scenario=seq(nrow(dset)),
@@ -140,4 +143,79 @@ age_analysis_incremental <- function(dset, existing){
 iset1 <- age_analysis_incremental(sset, 'Breast')
 iset2 <- age_analysis_incremental(sset, c('Breast', 'Lung and Bronchus'))
 iset6 <- age_analysis_incremental(sset, setdiff(pset$site, 'Breast'))
+
+##################################################
+# Control common plot aesthetics
+##################################################
+gg_theme <- function(...){
+    theme_set(theme_classic())
+    theme_update(axis.text=element_text(size=10, colour='black'),
+                 axis.line=element_line(colour='black'),
+                 axis.title=element_text(size=14),
+                 axis.ticks.length=unit(0.2, 'cm'),
+                 strip.background=element_rect(colour=NA, fill=NA),
+                 strip.text=element_text(size=14))
+    theme_update(...)
+}
+
+##################################################
+# Visualize patterns in hypothetical analysis
+##################################################
+hypothetical_plot <- function(set, ext='png', saveit=FALSE){
+    dset <- bind_rows(analysis1(specificity=0.97),
+                      analysis1(specificity=0.98),
+                      analysis1(specificity=0.99))
+    dset <- dset %>% filter(prevalence != 0.0005,
+                            localization != 0.5)
+    dset <- dset %>% select(-CDP)
+    dset <- dset %>% pivot_longer(cols=c(UCT, CD),
+                                  names_to='outcome',
+                                  values_to='value')
+    dset <- dset %>% mutate(specificity=factor(specificity),
+                            localization=factor(localization),
+                            outcome=factor(outcome,
+                                           levels=c('UCT', 'CD'),
+                                           labels=c('Unnecessary confirmation tests',
+                                                    'Expected cancers detected')))
+    gg_theme(legend.position='bottom')
+    gg <- ggplot(data=dset)
+    gg <- gg+geom_line(aes(x=prevalence,
+                           y=value,
+                           colour=specificity,
+                           alpha=sensitivity,
+                           group=interaction(sensitivity,
+                                             specificity)),
+                       show.legend=c(colour=TRUE, alpha=FALSE),
+                       size=0.6)
+    gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary confirmation tests'),
+                        aes(y=40))
+    gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Expected cancers detected'),
+                        aes(y=8))
+    gg <- gg+geom_blank(aes(y=0))
+    gg <- gg+geom_hline(aes(yintercept=0), colour='black')
+    gg <- gg+facet_wrap(~outcome, ncol=1, scales='free_y')
+    gg <- gg+scale_x_continuous('\nPrevalence of cancer B',
+                                labels=percent_format(accuracy=0.1),
+                                breaks=seq(0, 0.01, by=0.002),
+                                limits=c(0, 0.011))
+    gg <- gg+scale_y_continuous('Events per 1,000 women\n',
+                                expand=c(0, 0))
+    gg <- gg+scale_colour_viridis(discrete=TRUE,
+                                  begin=0.2,
+                                  end=0.8,
+                                  guide=guide_legend(title='Specificity',
+                                                     keywidth=unit(1, 'cm'),
+                                                     title.theme=element_text(size=12, face='bold'),
+                                                     label.theme=element_text(size=12, angle=0)))
+    print(gg)
+    if(saveit){
+        filename <- paste('hypothetical', datestamp, sep='_')
+        filename <- paste(filename, ext, sep='.')
+        ggsave(here('plots', filename),
+               plot=gg,
+               width=6,
+               height=9)
+    }
+}
+hypothetical_plot(saveit=TRUE)
 
