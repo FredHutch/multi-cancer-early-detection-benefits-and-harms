@@ -10,7 +10,8 @@ library(here)
 library(scales)
 library(viridis)
 
-datestamp <- '2021-03-03'
+#datestamp <- '2021-03-03'
+datestamp <- '2021-03-08'
 
 ##################################################
 # Project outcomes for k-cancer test
@@ -37,7 +38,7 @@ k_cancer_test <- function(dset, specificity=0.99, effect=0.2, size=1000){
                                        value[feature == 'sensitivity']*
                                        value[feature == 'localization'])
     cancers <- with(iset, size*sum(cancers))
-    # cancer deaths prevented
+    # expected cancer deaths prevented
     saved <- with(dset, size*effect*sum(value[feature == 'mortality']))
     return(tibble(UCT=tests, CD=cancers, CDP=saved))
 }
@@ -53,7 +54,7 @@ k_cancer_test <- function(dset, specificity=0.99, effect=0.2, size=1000){
 ##################################################
 analysis1 <- function(specificity){
     dset <- expand.grid(prevalence.a=0.001,
-                        prevalence.b=c(0.0005, 0.001, 0.005, 0.01),
+                        prevalence.b=c(0, 0.0005, 0.001, 0.005, 0.01),
                         #sensitivity.a=c(0.5, 0.7),
                         sensitivity.a=seq(0.5, 0.9, by=0.1),
                         localization.a=c(0.5, 0.8),
@@ -110,8 +111,8 @@ read_data <- function(filename){
                             mortality='Death.Rate')
     dset
 }
-#sset <- read_data(str_glue('seer_merged_2000-2002_followup=10_{datestamp}.csv'))
-sset <- read_data(str_glue('seer_merged_2000-2002_followup=15_{datestamp}.csv'))
+#sset <- read_data(str_glue('seer_merged_2000-2002_followup=10_2021-03-03.csv'))
+sset <- read_data(str_glue('seer_merged_2000-2002_followup=15_2021-03-03.csv'))
 sset <- full_join(sset, pset, by='site')
 
 ##################################################
@@ -217,5 +218,137 @@ hypothetical_plot <- function(ext='png', saveit=FALSE){
                height=9)
     }
 }
-hypothetical_plot(saveit=TRUE)
+#hypothetical_plot(saveit=TRUE)
+
+##################################################
+# Visualize UCTs in hypothetical analysis
+##################################################
+hypothetical_uct_plot <- function(ext='png', saveit=FALSE){
+    dset <- bind_rows(analysis1(specificity=0.97),
+                      analysis1(specificity=0.98),
+                      analysis1(specificity=0.99),
+                      analysis1(specificity=1.0))
+    dset <- dset %>% filter(prevalence == 0.01,
+                            localization == 0.8)
+    dset <- dset %>% select(-prevalence, -localization, -CD, -CDP)
+    dset <- dset %>% mutate(sensitivity=factor(sensitivity,
+                                               levels=unique(sensitivity),
+                                               labels=sprintf('%2.0f%%', 100*unique(sensitivity))))
+    gg_theme()
+    gg <- ggplot(data=dset)
+    gg <- gg+geom_line(aes(x=specificity,
+                           y=UCT,
+                           alpha=sensitivity),
+                       size=0.6)
+    gg <- gg+scale_x_continuous('\nSpecificity for cancers A and B',
+                                labels=percent_format(accuracy=1),
+                                breaks=seq(0.97, 1, by=0.01),
+                                limits=c(0.969, 1.001))
+    gg <- gg+scale_y_continuous('Unnecessary confirmation tests per 1,000 women\n',
+                                limits=c(0, 33),
+                                expand=c(0, 0))
+    gg <- gg+guides(alpha=guide_legend(title='Sensitivity for\ncancers A and B',
+                                       keywidth=unit(1, 'cm'),
+                                       title.theme=element_text(size=12),
+                                       label.theme=element_text(size=12, angle=0)))
+    print(gg)
+    if(saveit){
+        filename <- paste('hypothetical_uct', datestamp, sep='_')
+        filename <- paste(filename, ext, sep='.')
+        ggsave(here('plots', filename),
+               plot=gg,
+               width=6,
+               height=6)
+    }
+}
+#hypothetical_uct_plot(saveit=TRUE)
+
+##################################################
+# Visualize CDs in hypothetical analysis
+##################################################
+hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
+    dset <- analysis1(specificity=0.99)
+    dset <- dset %>% ungroup()
+    dset <- dset %>% filter(localization == 0.8)
+    dset <- dset %>% select(-specificity, -localization, -UCT, -CDP)
+    dset <- dset %>% mutate(sensitivity=factor(sensitivity,
+                                               levels=unique(sensitivity),
+                                               labels=sprintf('%2.0f%%', 100*unique(sensitivity))))
+    gg_theme()
+    gg <- ggplot(data=dset)
+    gg <- gg+geom_line(aes(x=prevalence,
+                           y=CD,
+                           alpha=sensitivity),
+                       size=0.6)
+    gg <- gg+scale_x_continuous('\nPrevalence of cancers A and B',
+                                labels=percent_format(accuracy=0.1),
+                                breaks=seq(0, 0.01, by=0.002))
+    gg <- gg+scale_y_continuous('Expected cancers detected per 1,000 women\n',
+                                limits=c(0, 9),
+                                breaks=seq(0, 8, by=2),
+                                expand=c(0, 0))
+    gg <- gg+guides(alpha=guide_legend(title='Sensitivity for\ncancers A and B',
+                                       keywidth=unit(1, 'cm'),
+                                       title.theme=element_text(size=12),
+                                       label.theme=element_text(size=12, angle=0)))
+    print(gg)
+    if(saveit){
+        filename <- paste('hypothetical_cd', datestamp, sep='_')
+        filename <- paste(filename, ext, sep='.')
+        ggsave(here('plots', filename),
+               plot=gg,
+               width=6,
+               height=6)
+    }
+}
+#hypothetical_cd_plot(saveit=TRUE)
+
+##################################################
+# Visualize outcomes in empirical analysis
+##################################################
+empirical_age_plot <- function(dset, ext='png', sensitivity=FALSE, saveit=FALSE){
+    dset <- dset %>% mutate(UCT.CD=UCT/CD,
+                            UCT.CDP=UCT/CDP)
+    dset <- dset %>% select(-UCT, -CD, -CDP)
+    dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.CDP),
+                                  names_to='outcome',
+                                  values_to='value')
+    dset <- dset %>% ungroup()
+    dset <- dset %>% arrange(value)
+    dset <- dset %>% mutate(age=sub('-[567]4', ' years', age),
+                            outcome=factor(outcome,
+                                           levels=c('UCT.CD', 'UCT.CDP'),
+                                           labels=c('Unnecessary\nconfirmation\ntests per cancer\ndetected',
+                                                    'Unnecessary\nconfirmation\ntests per cancer\ndeath prevented')),
+                            site=factor(site, levels=unique(site)))
+    if(sensitivity){
+        dset <- dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per cancer\ndeath prevented')
+        height <- 4
+    } else {
+        height <- 6
+    }
+    gg_theme(axis.text.x=element_text(size=8, angle=90, vjust=0.5, hjust=1),
+             axis.ticks.x=element_blank(),
+             strip.text.y=element_text(size=10, angle=0))
+    gg <- ggplot(data=dset)
+    gg <- gg+geom_bar(aes(x=site, y=value),
+                      stat='identity',
+                      position='dodge')
+    gg <- gg+geom_hline(aes(yintercept=0), colour='black')
+    gg <- gg+facet_grid(outcome~age, scales='free_y')
+    gg <- gg+scale_x_discrete(name='')
+    gg <- gg+scale_y_continuous(name='',
+                                expand=c(0, 0))
+    print(gg)
+    if(saveit){
+        filename <- paste('empirical_age', datestamp, sep='_')
+        filename <- paste(filename, ext, sep='.')
+        ggsave(here('plots', filename),
+               plot=gg,
+               width=6,
+               height=height)
+    }
+}
+#empirical_age_plot(iset1, sensitivity=FALSE, saveit=TRUE)
+#empirical_age_plot(iset1, sensitivity=TRUE, saveit=TRUE)
 
