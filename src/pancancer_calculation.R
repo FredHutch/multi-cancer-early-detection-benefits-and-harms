@@ -26,7 +26,7 @@ datestamp <- '2021-03-13'
 # (unspecified)             mortality (of A)
 # Sp                        specificity
 ##################################################
-k_cancer_test <- function(dset, specificity=0.99, effect=0.2, size=1000){
+k_cancer_test <- function(dset, specificity=0.99, size=1000){
     # group results by cancer site
     gset <- dset %>% group_by(site)
     # expected unnecessary confirmation tests
@@ -41,8 +41,10 @@ k_cancer_test <- function(dset, specificity=0.99, effect=0.2, size=1000){
                                        value[feature == 'localization'])
     cancers <- with(iset, size*sum(cancers))
     # expected lives saved
-    saved <- with(dset, size*effect*sum(value[feature == 'mortality']))
-    tibble(UCT=tests, CD=cancers, LS=saved)
+    lset <- gset %>% summarize(lives=value[feature == 'effect']*
+                                     value[feature == 'mortality'])
+    lives <- with(lset, size*sum(lives))
+    tibble(UCT=tests, CD=cancers, LS=lives)
 }
 
 ##################################################
@@ -54,8 +56,8 @@ k_cancer_test <- function(dset, specificity=0.99, effect=0.2, size=1000){
 # 4. varying localization of both cancers=0.5 to 0.8
 # 5. varying overall specificity=0.95 to 0.99
 ##################################################
-analysis1 <- function(specificity){
-    dset <- expand.grid(prevalence.a=0.001,
+hypothetical_test <- function(specificity){
+    dset <- expand_grid(prevalence.a=0.001,
                         prevalence.b=c(0, 0.0005, 0.001, 0.005, 0.01),
                         sensitivity.a=seq(0.5, 0.9, by=0.1),
                         localization.a=c(0.5, 0.8),
@@ -97,30 +99,43 @@ read_data <- function(filename){
                             -ends_with('Upper'))
     dset <- dset %>% rename(prevalence='Diagnosis.Rate',
                             mortality='Death.Rate')
+    dset <- dset %>% mutate(site=factor(site,
+                                        levels=c('Breast',
+                                                 'Colon and Rectum',
+                                                 'Liver and Intrahepatic Bile Duct',
+                                                 'Lung and Bronchus',
+                                                 'Ovary',
+                                                 'Pancreas'),
+                                        labels=c('Breast',
+                                                 'Colon',
+                                                 'Liver',
+                                                 'Lung',
+                                                 'Ovary',
+                                                 'Pancreas')))
 }
 
 ##################################################
 # Age-specific outcomes from SEER data
 ##################################################
-age_analysis <- function(bset, aset, effect=0.2){
+age_analysis <- function(bset, aset){
     dset <- bind_rows(bset, aset)
     dset <- dset %>% mutate(candidate=unique(bset$site))
     dset <- dset %>% pivot_longer(-c(age, site, candidate),
                                   names_to='feature',
                                   values_to='value')
     dset <- dset %>% group_by(age)
-    dset <- dset %>% do(k_cancer_test(., effect=effect))
+    dset <- dset %>% do(k_cancer_test(.))
     dset <- dset %>% ungroup()
 }
 
 ##################################################
 # Age-specific incremental impact of candidate cancer
 ##################################################
-age_analysis_incremental <- function(dset, existing, effect=0.2){
+age_analysis_incremental <- function(dset, existing){
     aset <- dset %>% filter(site %in% existing)
     bset <- dset %>% filter(!site %in% existing)
     bset <- bset %>% group_by(site)
-    rset <- bset %>% do(age_analysis(., aset, effect=effect))
+    rset <- bset %>% do(age_analysis(., aset))
     rset <- rset %>% ungroup()
 }
 
@@ -142,10 +157,10 @@ gg_theme <- function(...){
 # Visualize UCTs in hypothetical analysis
 ##################################################
 hypothetical_uct_plot <- function(ext='png', saveit=FALSE){
-    dset <- bind_rows(analysis1(specificity=0.97),
-                      analysis1(specificity=0.98),
-                      analysis1(specificity=0.99),
-                      analysis1(specificity=1.0))
+    dset <- bind_rows(hypothetical_test(specificity=0.97),
+                      hypothetical_test(specificity=0.98),
+                      hypothetical_test(specificity=0.99),
+                      hypothetical_test(specificity=1.0))
     dset <- dset %>% filter(prevalence == 0.01,
                             localization == 0.8)
     dset <- dset %>% select(-prevalence, -localization, -CD, -LS)
@@ -184,7 +199,7 @@ hypothetical_uct_plot <- function(ext='png', saveit=FALSE){
 # Visualize CDs in hypothetical analysis
 ##################################################
 hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
-    dset <- analysis1(specificity=0.99)
+    dset <- hypothetical_test(specificity=0.99)
     dset <- dset %>% ungroup()
     dset <- dset %>% filter(localization == 0.8)
     dset <- dset %>% select(-specificity, -localization, -UCT, -LS)
@@ -222,20 +237,8 @@ hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
 ##################################################
 # Visualize outcomes in empirical analysis
 ##################################################
-empirical_age_plot <- function(dset, ext='png', sensitivity=FALSE, saveit=FALSE){
-    dset <- dset %>% mutate(site=factor(site,
-                                        levels=c('Colon and Rectum',
-                                                 'Liver and Intrahepatic Bile Duct',
-                                                 'Lung and Bronchus',
-                                                 'Ovary',
-                                                 'Pancreas'),
-                                        labels=c('Colon',
-                                                 'Liver',
-                                                 'Lung',
-                                                 'Ovary',
-                                                 'Pancreas')),
-                            UCT.CD=UCT/CD,
-                            UCT.LS=UCT/LS)
+empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, saveit=FALSE){
+    dset <- dset %>% mutate(UCT.CD=UCT/CD, UCT.LS=UCT/LS)
     dset <- dset %>% select(-UCT, -CD, -LS)
     dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS),
                                   names_to='outcome',
@@ -254,6 +257,7 @@ empirical_age_plot <- function(dset, ext='png', sensitivity=FALSE, saveit=FALSE)
     } else {
         height <- 6
     }
+    ymax <- switch(as.character(figureno), '2'=80, '3'=50, 'S1'=20, 'S2'=80)
     gg_theme(axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
              axis.ticks.x=element_blank(),
              panel.spacing=unit(0.02, 'npc'),
@@ -263,21 +267,16 @@ empirical_age_plot <- function(dset, ext='png', sensitivity=FALSE, saveit=FALSE)
                       stat='identity',
                       position='dodge')
     gg <- gg+geom_hline(aes(yintercept=0), colour='black')
-    if(sensitivity)
-        gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved'), aes(y=100))
-        #gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved'), aes(y=150))
-    else {
+    if(!sensitivity)
         gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per cancer\ndetected'), aes(y=8))
-        gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved'), aes(y=80))
-    }
+    gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved'), aes(y=ymax))
     gg <- gg+facet_grid(outcome~age, scales='free_y')
     gg <- gg+scale_x_discrete(name='')
     gg <- gg+scale_y_continuous(name='',
                                 expand=c(0, 0))
     print(gg)
     if(saveit){
-        followup <- ifelse(sensitivity, 'followup=10', 'followup=15')
-        filename <- paste('empirical_age', datestamp, sep='_')
+        filename <- str_glue('figure{figureno}_{datestamp}')
         filename <- paste(filename, ext, sep='.')
         ggsave(here('plots', filename),
                plot=gg,
@@ -341,18 +340,7 @@ format_empirical <- function(dset, saveit=FALSE){
 ##################################################
 format_supplemental <- function(dset, tableno, saveit=FALSE){
     dset <- dset %>% select(age, site, UCT, CD, LS)
-    dset <- dset %>% mutate(site=factor(site,
-                                        levels=c('Lung and Bronchus',
-                                                 'Colon and Rectum',
-                                                 'Ovary',
-                                                 'Pancreas',
-                                                 'Liver and Intrahepatic Bile Duct'),
-                                        labels=c('Lung',
-                                                 'Colon',
-                                                 'Ovary',
-                                                 'Pancreas',
-                                                 'Liver')),
-                            age=sub('-[567]4', '', age))
+    dset <- dset %>% mutate(age=sub('-[567]4', '', age))
     dset <- dset %>% mutate(UCT=sprintf('%4.1f', UCT),
                             CD=sprintf('%3.1f', CD),
                             LS=sprintf('%3.1f', LS))
@@ -377,17 +365,18 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 # Table 2
 ##################################################
 #pset <- tribble(~site, ~sensitivity, ~localization,
-#                'Breast', 0.64, 0.96,
-#                'Colon and Rectum', 0.74, 0.97,
-#                'Lung and Bronchus', 0.59, 0.92,
-#                'Ovary', 0.67, 0.96,
+#                'Breast',   0.64, 0.96,
+#                'Colon',    0.74, 0.97,
+#                'Lung',     0.59, 0.92,
+#                'Ovary',    0.67, 0.96,
 #                'Pancreas', 0.78, 0.79,
-#                'Liver and Intrahepatic Bile Duct', 0.68, 0.72)
-#pset <- pset %>% mutate(Marginal=Sensitivity*Localization)
+#                'Liver',    0.68, 0.72)
+#pset %>% mutate(marginal=sensitivity*localization)
 
 ##################################################
 # Table 3
 ##################################################
+#pset <- pset %>% mutate(effect=0.2)
 #sset <- full_join(sset, pset, by='site')
 #iset6 <- age_analysis_incremental(sset, setdiff(pset$site, 'Breast'))
 #format_empirical(iset6, saveit=TRUE)
@@ -402,32 +391,33 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 # Figure 2
 ##################################################
 #iset1 <- age_analysis_incremental(sset, 'Breast')
-#empirical_age_plot(iset1, sensitivity=FALSE, saveit=TRUE)
+#empirical_age_plot(iset1, figureno=2, sensitivity=FALSE, saveit=TRUE)
 
 ##################################################
 # Figure 3
 ##################################################
-#iset2 <- age_analysis_incremental(sset, c('Breast', 'Lung and Bronchus'))
-#empirical_age_plot(iset2, sensitivity=FALSE, saveit=TRUE)
+#iset2 <- age_analysis_incremental(sset, c('Breast', 'Lung'))
+#empirical_age_plot(iset2, figureno=3, sensitivity=FALSE, saveit=TRUE)
 
 ##################################################
 # Supplemental Figure 1
 ##################################################
-#iset1s <- age_analysis_incremental(sset, 'Breast', effect=0.1)
-#empirical_age_plot(iset1s, sensitivity=TRUE, saveit=TRUE)
+#sset1s <- sset %>% mutate(effect=ifelse(site %in% c('Breast', 'Colon', 'Lung'), 0.9, 0.5))
+#iset1s <- age_analysis_incremental(sset1s, 'Breast')
+#empirical_age_plot(iset1s, figureno='S1', sensitivity=TRUE, saveit=TRUE)
 
 ##################################################
 # Supplemental Figure 2
 ##################################################
 #sset10 <- read_data(str_glue('seer_merged_2000-2002_followup=10_2021-03-03.csv'))
 #iset10 <- age_analysis_incremental(sset, 'Breast')
-#empirical_age_plot(iset10, sensitivity=TRUE, saveit=TRUE)
+#empirical_age_plot(iset10, figureno='S2', sensitivity=TRUE, saveit=TRUE)
 
 ##################################################
 # Supplemental Table 1
 ##################################################
-#hset <- bind_rows(analysis1(specificity=0.95),
-#                  analysis1(specificity=0.99))
+#hset <- bind_rows(hypothetical_test(specificity=0.95),
+#                  hypothetical_test(specificity=0.99))
 #format_hypothetical(hset, saveit=TRUE)
 
 ##################################################
