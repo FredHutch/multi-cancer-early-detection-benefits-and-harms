@@ -257,7 +257,7 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
     } else {
         height <- 6
     }
-    ymax <- switch(as.character(figureno), '2'=80, '3'=50, 'S1'=20, 'S2'=80)
+    ymax <- switch(as.character(figureno), '2'=80, '3'=50, 'S1'=150, 'S2'=80)
     gg_theme(axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
              axis.ticks.x=element_blank(),
              panel.spacing=unit(0.02, 'npc'),
@@ -402,7 +402,7 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 ##################################################
 # Supplemental Figure 1
 ##################################################
-#sset1s <- sset %>% mutate(effect=ifelse(site %in% c('Breast', 'Colon', 'Lung'), 0.9, 0.5))
+#sset1s <- sset %>% mutate(effect=ifelse(site %in% c('Breast', 'Colon', 'Lung'), 0.1, 0.5))
 #iset1s <- age_analysis_incremental(sset1s, 'Breast')
 #empirical_age_plot(iset1s, figureno='S1', sensitivity=TRUE, saveit=TRUE)
 
