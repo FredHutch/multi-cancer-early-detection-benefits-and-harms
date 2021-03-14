@@ -359,7 +359,7 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 ##################################################
 # Table 1
 ##################################################
-#sset <- read_data(str_glue('seer_merged_2000-2002_followup=15_2021-03-03.csv'))
+#sset <- read_data('seer_merged_2000-2002_followup=15_2021-03-03.csv')
 
 ##################################################
 # Table 2
@@ -409,7 +409,7 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 ##################################################
 # Supplemental Figure 2
 ##################################################
-#sset10 <- read_data(str_glue('seer_merged_2000-2002_followup=10_2021-03-03.csv'))
+#sset10 <- read_data('seer_merged_2000-2002_followup=10_2021-03-03.csv')
 #iset10 <- age_analysis_incremental(sset, 'Breast')
 #empirical_age_plot(iset10, figureno='S2', sensitivity=TRUE, saveit=TRUE)
 
