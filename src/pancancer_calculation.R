@@ -3,7 +3,7 @@
 # at age-specific screening occasions:
 # 1. expected unnecessary confirmation tests (UCTs)
 # 2. expected cancers detected (CDs)
-# 3. expected cancer deaths prevented (CDPs)
+# 3. expected lives saved (LSs)
 ##################################################
 library(tidyverse)
 library(here)
@@ -11,7 +11,8 @@ library(scales)
 library(viridis)
 
 #datestamp <- '2021-03-03'
-datestamp <- '2021-03-08'
+#datestamp <- '2021-03-08'
+datestamp <- '2021-03-12'
 
 ##################################################
 # Project outcomes for k-cancer test
@@ -38,9 +39,9 @@ k_cancer_test <- function(dset, specificity=0.99, effect=0.2, size=1000){
                                        value[feature == 'sensitivity']*
                                        value[feature == 'localization'])
     cancers <- with(iset, size*sum(cancers))
-    # expected cancer deaths prevented
+    # expected lives saved
     saved <- with(dset, size*effect*sum(value[feature == 'mortality']))
-    return(tibble(UCT=tests, CD=cancers, CDP=saved))
+    return(tibble(UCT=tests, CD=cancers, LS=saved))
 }
 
 ##################################################
@@ -80,6 +81,7 @@ analysis1 <- function(specificity){
                               specificity,
                               prevalence)
     dset <- dset %>% do(k_cancer_test(., specificity=specificity))
+    dset <- dset %>% ungroup()
 }
 hset <- bind_rows(analysis1(specificity=0.95),
                   analysis1(specificity=0.99))
@@ -118,24 +120,26 @@ sset <- full_join(sset, pset, by='site')
 ##################################################
 # Age-specific outcomes from SEER data
 ##################################################
-age_analysis <- function(bset, aset){
+age_analysis <- function(bset, aset, effect=0.2){
     dset <- bind_rows(bset, aset)
     dset <- dset %>% mutate(candidate=unique(bset$site))
     dset <- dset %>% pivot_longer(-c(age, site, candidate),
                                   names_to='feature',
                                   values_to='value')
     dset <- dset %>% group_by(age)
-    dset <- dset %>% do(k_cancer_test(.))
+    dset <- dset %>% do(k_cancer_test(., effect=effect))
+    dset <- dset %>% ungroup()
 }
 
 ##################################################
 # Age-specific incremental impact of candidate cancer
 ##################################################
-age_analysis_incremental <- function(dset, existing){
+age_analysis_incremental <- function(dset, existing, effect=0.2){
     aset <- dset %>% filter(site %in% existing)
     bset <- dset %>% filter(!site %in% existing)
     bset <- bset %>% group_by(site)
-    rset <- bset %>% do(age_analysis(., aset))
+    rset <- bset %>% do(age_analysis(., aset, effect=effect))
+    rset <- rset %>% ungroup()
 }
 
 ##################################################
@@ -168,7 +172,7 @@ hypothetical_plot <- function(ext='png', saveit=FALSE){
                       analysis1(specificity=0.99))
     dset <- dset %>% filter(prevalence != 0.0005,
                             localization != 0.5)
-    dset <- dset %>% select(-CDP)
+    dset <- dset %>% select(-LS)
     dset <- dset %>% pivot_longer(cols=c(UCT, CD),
                                   names_to='outcome',
                                   values_to='value')
@@ -230,7 +234,7 @@ hypothetical_uct_plot <- function(ext='png', saveit=FALSE){
                       analysis1(specificity=1.0))
     dset <- dset %>% filter(prevalence == 0.01,
                             localization == 0.8)
-    dset <- dset %>% select(-prevalence, -localization, -CD, -CDP)
+    dset <- dset %>% select(-prevalence, -localization, -CD, -LS)
     dset <- dset %>% mutate(sensitivity=factor(sensitivity,
                                                levels=unique(sensitivity),
                                                labels=sprintf('%2.0f%%', 100*unique(sensitivity))))
@@ -270,7 +274,7 @@ hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
     dset <- analysis1(specificity=0.99)
     dset <- dset %>% ungroup()
     dset <- dset %>% filter(localization == 0.8)
-    dset <- dset %>% select(-specificity, -localization, -UCT, -CDP)
+    dset <- dset %>% select(-specificity, -localization, -UCT, -LS)
     dset <- dset %>% mutate(sensitivity=factor(sensitivity,
                                                levels=unique(sensitivity),
                                                labels=sprintf('%2.0f%%', 100*unique(sensitivity))))
@@ -280,10 +284,10 @@ hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
                            y=CD,
                            alpha=sensitivity),
                        size=0.6)
-    gg <- gg+scale_x_continuous('\nPrevalence of cancers A and B',
+    gg <- gg+scale_x_continuous('\nPrevalence of cancer B',
                                 labels=percent_format(accuracy=0.1),
                                 breaks=seq(0, 0.01, by=0.002))
-    gg <- gg+scale_y_continuous('Expected cancers detected per 1,000 women\n',
+    gg <- gg+scale_y_continuous('Cancers detected per 1,000 women\n',
                                 limits=c(0, 9),
                                 breaks=seq(0, 8, by=2),
                                 expand=c(0, 0))
@@ -307,48 +311,176 @@ hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
 # Visualize outcomes in empirical analysis
 ##################################################
 empirical_age_plot <- function(dset, ext='png', sensitivity=FALSE, saveit=FALSE){
-    dset <- dset %>% mutate(UCT.CD=UCT/CD,
-                            UCT.CDP=UCT/CDP)
-    dset <- dset %>% select(-UCT, -CD, -CDP)
-    dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.CDP),
+    dset <- dset %>% mutate(site=factor(site,
+                                        levels=c('Colon and Rectum',
+                                                 'Liver and Intrahepatic Bile Duct',
+                                                 'Lung and Bronchus',
+                                                 'Ovary',
+                                                 'Pancreas'),
+                                        labels=c('Colon',
+                                                 'Liver',
+                                                 'Lung',
+                                                 'Ovary',
+                                                 'Pancreas')),
+                            UCT.CD=UCT/CD,
+                            UCT.LS=UCT/LS)
+    dset <- dset %>% select(-UCT, -CD, -LS)
+    dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS),
                                   names_to='outcome',
                                   values_to='value')
     dset <- dset %>% ungroup()
     dset <- dset %>% arrange(value)
-    dset <- dset %>% mutate(age=sub('-[567]4', ' years', age),
+    dset <- dset %>% mutate(age=sub('-[567]4', ' y', age),
                             outcome=factor(outcome,
-                                           levels=c('UCT.CD', 'UCT.CDP'),
+                                           levels=c('UCT.CD', 'UCT.LS'),
                                            labels=c('Unnecessary\nconfirmation\ntests per cancer\ndetected',
-                                                    'Unnecessary\nconfirmation\ntests per cancer\ndeath prevented')),
+                                                    'Unnecessary\nconfirmation\ntests per life\nsaved')),
                             site=factor(site, levels=unique(site)))
     if(sensitivity){
-        dset <- dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per cancer\ndeath prevented')
+        dset <- dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved')
         height <- 4
     } else {
         height <- 6
     }
-    gg_theme(axis.text.x=element_text(size=8, angle=90, vjust=0.5, hjust=1),
+    gg_theme(axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
              axis.ticks.x=element_blank(),
+             panel.spacing=unit(0.02, 'npc'),
              strip.text.y=element_text(size=10, angle=0))
     gg <- ggplot(data=dset)
     gg <- gg+geom_bar(aes(x=site, y=value),
                       stat='identity',
                       position='dodge')
     gg <- gg+geom_hline(aes(yintercept=0), colour='black')
+    if(sensitivity)
+        gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved'), aes(y=100))
+        #gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved'), aes(y=150))
+    else {
+        gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per cancer\ndetected'), aes(y=8))
+        gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved'), aes(y=80))
+    }
     gg <- gg+facet_grid(outcome~age, scales='free_y')
     gg <- gg+scale_x_discrete(name='')
     gg <- gg+scale_y_continuous(name='',
                                 expand=c(0, 0))
     print(gg)
     if(saveit){
+        followup <- ifelse(sensitivity, 'followup=10', 'followup=15')
         filename <- paste('empirical_age', datestamp, sep='_')
         filename <- paste(filename, ext, sep='.')
         ggsave(here('plots', filename),
                plot=gg,
-               width=6,
+               width=8,
                height=height)
     }
 }
+##################################################
+# Figure 2
+##################################################
 #empirical_age_plot(iset1, sensitivity=FALSE, saveit=TRUE)
+
+##################################################
+# Figure 3
+##################################################
+#empirical_age_plot(iset2, sensitivity=FALSE, saveit=TRUE)
+
+##################################################
+# Supplemental Figure 1
+##################################################
+#iset1s <- age_analysis_incremental(sset, 'Breast', effect=0.1)
+#empirical_age_plot(iset1s, sensitivity=TRUE, saveit=TRUE)
+
+##################################################
+# Supplemental Figure 2
+##################################################
 #empirical_age_plot(iset1, sensitivity=TRUE, saveit=TRUE)
+
+##################################################
+# Supplemental Table 1
+##################################################
+format_hypothetical <- function(dset, saveit=FALSE){
+    dset <- dset %>% select(-scenario, -LS)
+    dset <- dset %>% filter(prevalence > 0, sensitivity %in% c(0.5, 0.8))
+    dset <- dset %>% mutate(sensitivity=sprintf('%2.0f', 100*sensitivity),
+                            specificity=sprintf('%2.0f', 100*specificity),
+                            localization=sprintf('%2.0f', 100*localization),
+                            prevalence=sprintf('%5.2f', 100*prevalence),
+                            UCT=sprintf('%4.1f', UCT),
+                            CD=sprintf('%3.1f', CD))
+    dset <- dset %>% rename('Sensitivity, %'='sensitivity',
+                            'Localization, %'='localization',
+                            'Specificity, %'='specificity',
+                            'Prevalence, %'='prevalence',
+                            'Unnecessary confirmation tests, n'='UCT',
+                            'Cancers detected, n'='CD')
+    if(saveit){
+        filename <- str_glue('supplemental_table1_{datestamp}.csv')
+        write_csv(dset, here('data', filename))
+    }
+}
+#format_hypothetical(hset, saveit=TRUE)
+
+##################################################
+# Table 3
+##################################################
+format_empirical <- function(dset, saveit=FALSE){
+    dset <- dset %>% select(-site)
+    dset <- dset %>% mutate(age=sub('-[567]4', '', age),
+                            UCT.CD=UCT/CD,
+                            UCT.LS=UCT/LS)
+    dset <- dset %>% mutate(UCT=sprintf('%4.1f', UCT),
+                            CD=sprintf('%3.1f', CD),
+                            LS=sprintf('%3.1f', LS),
+                            UCT.CD=sprintf('%3.1f', UCT.CD),
+                            UCT.LS=sprintf('%3.1f', UCT.LS))
+    dset <- dset %>% arrange(age)
+    dset <- dset %>% rename('Screening age, y'='age',
+                            'Unnecessary confirmation tests, n'='UCT',
+                            'Cancers detected, n'='CD',
+                            'Lives saved, n'='LS',
+                            'UCT/CD'='UCT.CD',
+                            'UCT/LS'='UCT.LS')
+    if(saveit){
+        filename <- str_glue('table3_{datestamp}.csv')
+        write_csv(dset, here('data', filename))
+    }
+}
+format_empirical(iset6, saveit=TRUE)
+
+##################################################
+# Supplemental Table 2
+##################################################
+format_supplemental <- function(dset, tableno, saveit=FALSE){
+    dset <- dset %>% select(age, site, UCT, CD, LS)
+    dset <- dset %>% mutate(site=factor(site,
+                                        levels=c('Lung and Bronchus',
+                                                 'Colon and Rectum',
+                                                 'Ovary',
+                                                 'Pancreas',
+                                                 'Liver and Intrahepatic Bile Duct'),
+                                        labels=c('Lung',
+                                                 'Colon',
+                                                 'Ovary',
+                                                 'Pancreas',
+                                                 'Liver')),
+                            age=sub('-[567]4', '', age))
+    dset <- dset %>% mutate(UCT=sprintf('%4.1f', UCT),
+                            CD=sprintf('%3.1f', CD),
+                            LS=sprintf('%3.1f', LS))
+    dset <- dset %>% arrange(age, site)
+    dset <- dset %>% rename('Tissue of origin'='site',
+                            'Screening age, y'='age',
+                            'Unnecessary confirmation tests, n'='UCT',
+                            'Cancers detected, n'='CD',
+                            'Lives saved, n'='LS')
+    if(saveit){
+        filename <- str_glue('supplemental_table{tableno}_{datestamp}.csv')
+        write_csv(dset, here('data', filename))
+    }
+}
+#format_supplemental(iset1, tableno=2, saveit=TRUE)
+
+##################################################
+# Supplemental Table 3
+##################################################
+#format_supplemental(iset2, tableno=3, saveit=TRUE)
 
