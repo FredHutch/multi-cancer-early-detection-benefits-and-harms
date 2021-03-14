@@ -12,7 +12,8 @@ library(viridis)
 
 #datestamp <- '2021-03-03'
 #datestamp <- '2021-03-08'
-datestamp <- '2021-03-12'
+#datestamp <- '2021-03-12'
+datestamp <- '2021-03-13'
 
 ##################################################
 # Project outcomes for k-cancer test
@@ -41,22 +42,21 @@ k_cancer_test <- function(dset, specificity=0.99, effect=0.2, size=1000){
     cancers <- with(iset, size*sum(cancers))
     # expected lives saved
     saved <- with(dset, size*effect*sum(value[feature == 'mortality']))
-    return(tibble(UCT=tests, CD=cancers, LS=saved))
+    tibble(UCT=tests, CD=cancers, LS=saved)
 }
 
 ##################################################
 # Analysis 1: pan-cancer test for two hypothetical
 # cancers across selected scenarios:
-# 1. fixed sensitivity of both cancers=0.7
+# 1. varying sensitivity of both cancers=0.5 to 0.9
 # 2. fixed prevalence of cancer A=0.001
-# 3. varying prevalence of cancer B=0.0005 to 0.01
+# 3. varying prevalence of cancer B=0 to 0.01
 # 4. varying localization of both cancers=0.5 to 0.8
 # 5. varying overall specificity=0.95 to 0.99
 ##################################################
 analysis1 <- function(specificity){
     dset <- expand.grid(prevalence.a=0.001,
                         prevalence.b=c(0, 0.0005, 0.001, 0.005, 0.01),
-                        #sensitivity.a=c(0.5, 0.7),
                         sensitivity.a=seq(0.5, 0.9, by=0.1),
                         localization.a=c(0.5, 0.8),
                         mortality.a=0)
@@ -83,20 +83,6 @@ analysis1 <- function(specificity){
     dset <- dset %>% do(k_cancer_test(., specificity=specificity))
     dset <- dset %>% ungroup()
 }
-hset <- bind_rows(analysis1(specificity=0.95),
-                  analysis1(specificity=0.99))
-
-##################################################
-# Pan-cancer test performance characteristics
-##################################################
-pset <- tribble(~site, ~sensitivity, ~localization,
-                'Breast', 0.64, 0.96,
-                'Colon and Rectum', 0.74, 0.97,
-                'Lung and Bronchus', 0.59, 0.92,
-                'Ovary', 0.67, 0.96,
-                'Pancreas', 0.78, 0.79,
-                'Liver and Intrahepatic Bile Duct', 0.68, 0.72)
-#pset <- pset %>% mutate(Marginal=Sensitivity*Localization)
 
 ##################################################
 # Read merged SEER incidence and IBM data
@@ -111,11 +97,7 @@ read_data <- function(filename){
                             -ends_with('Upper'))
     dset <- dset %>% rename(prevalence='Diagnosis.Rate',
                             mortality='Death.Rate')
-    dset
 }
-#sset <- read_data(str_glue('seer_merged_2000-2002_followup=10_2021-03-03.csv'))
-sset <- read_data(str_glue('seer_merged_2000-2002_followup=15_2021-03-03.csv'))
-sset <- full_join(sset, pset, by='site')
 
 ##################################################
 # Age-specific outcomes from SEER data
@@ -143,13 +125,6 @@ age_analysis_incremental <- function(dset, existing, effect=0.2){
 }
 
 ##################################################
-# Selected incremental analyses
-##################################################
-iset1 <- age_analysis_incremental(sset, 'Breast')
-iset2 <- age_analysis_incremental(sset, c('Breast', 'Lung and Bronchus'))
-iset6 <- age_analysis_incremental(sset, setdiff(pset$site, 'Breast'))
-
-##################################################
 # Control plot aesthetics
 ##################################################
 gg_theme <- function(...){
@@ -162,67 +137,6 @@ gg_theme <- function(...){
                  strip.text=element_text(size=14))
     theme_update(...)
 }
-
-##################################################
-# Visualize patterns in hypothetical analysis
-##################################################
-hypothetical_plot <- function(ext='png', saveit=FALSE){
-    dset <- bind_rows(analysis1(specificity=0.97),
-                      analysis1(specificity=0.98),
-                      analysis1(specificity=0.99))
-    dset <- dset %>% filter(prevalence != 0.0005,
-                            localization != 0.5)
-    dset <- dset %>% select(-LS)
-    dset <- dset %>% pivot_longer(cols=c(UCT, CD),
-                                  names_to='outcome',
-                                  values_to='value')
-    dset <- dset %>% mutate(specificity=factor(specificity),
-                            localization=factor(localization),
-                            outcome=factor(outcome,
-                                           levels=c('UCT', 'CD'),
-                                           labels=c('Unnecessary confirmation tests',
-                                                    'Expected cancers detected')))
-    gg_theme(legend.position='bottom')
-    gg <- ggplot(data=dset)
-    gg <- gg+geom_line(aes(x=prevalence,
-                           y=value,
-                           colour=specificity,
-                           alpha=sensitivity,
-                           group=interaction(sensitivity,
-                                             specificity)),
-                       show.legend=c(colour=TRUE, alpha=FALSE),
-                       size=0.6)
-    gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary confirmation tests'),
-                        aes(y=40))
-    gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Expected cancers detected'),
-                        aes(y=8))
-    gg <- gg+geom_blank(aes(y=0))
-    gg <- gg+geom_hline(aes(yintercept=0), colour='black')
-    gg <- gg+facet_wrap(~outcome, ncol=1, scales='free_y')
-    gg <- gg+scale_x_continuous('\nPrevalence of cancer B',
-                                labels=percent_format(accuracy=0.1),
-                                breaks=seq(0, 0.01, by=0.002),
-                                limits=c(0, 0.011))
-    gg <- gg+scale_y_continuous('Events per 1,000 women\n',
-                                expand=c(0, 0))
-    gg <- gg+scale_colour_viridis(discrete=TRUE,
-                                  begin=0.2,
-                                  end=0.8,
-                                  guide=guide_legend(title='Specificity',
-                                                     keywidth=unit(1, 'cm'),
-                                                     title.theme=element_text(size=12, face='bold'),
-                                                     label.theme=element_text(size=12, angle=0)))
-    print(gg)
-    if(saveit){
-        filename <- paste('hypothetical', datestamp, sep='_')
-        filename <- paste(filename, ext, sep='.')
-        ggsave(here('plots', filename),
-               plot=gg,
-               width=6,
-               height=9)
-    }
-}
-#hypothetical_plot(saveit=TRUE)
 
 ##################################################
 # Visualize UCTs in hypothetical analysis
@@ -265,7 +179,6 @@ hypothetical_uct_plot <- function(ext='png', saveit=FALSE){
                height=6)
     }
 }
-#hypothetical_uct_plot(saveit=TRUE)
 
 ##################################################
 # Visualize CDs in hypothetical analysis
@@ -305,7 +218,6 @@ hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
                height=6)
     }
 }
-#hypothetical_cd_plot(saveit=TRUE)
 
 ##################################################
 # Visualize outcomes in empirical analysis
@@ -373,29 +285,9 @@ empirical_age_plot <- function(dset, ext='png', sensitivity=FALSE, saveit=FALSE)
                height=height)
     }
 }
-##################################################
-# Figure 2
-##################################################
-#empirical_age_plot(iset1, sensitivity=FALSE, saveit=TRUE)
 
 ##################################################
-# Figure 3
-##################################################
-#empirical_age_plot(iset2, sensitivity=FALSE, saveit=TRUE)
-
-##################################################
-# Supplemental Figure 1
-##################################################
-#iset1s <- age_analysis_incremental(sset, 'Breast', effect=0.1)
-#empirical_age_plot(iset1s, sensitivity=TRUE, saveit=TRUE)
-
-##################################################
-# Supplemental Figure 2
-##################################################
-#empirical_age_plot(iset1, sensitivity=TRUE, saveit=TRUE)
-
-##################################################
-# Supplemental Table 1
+# Format table for hypothetical two-cancer test
 ##################################################
 format_hypothetical <- function(dset, saveit=FALSE){
     dset <- dset %>% select(-scenario, -LS)
@@ -417,10 +309,9 @@ format_hypothetical <- function(dset, saveit=FALSE){
         write_csv(dset, here('data', filename))
     }
 }
-#format_hypothetical(hset, saveit=TRUE)
 
 ##################################################
-# Table 3
+# Format table for realistic six-cancer test
 ##################################################
 format_empirical <- function(dset, saveit=FALSE){
     dset <- dset %>% select(-site)
@@ -444,10 +335,9 @@ format_empirical <- function(dset, saveit=FALSE){
         write_csv(dset, here('data', filename))
     }
 }
-format_empirical(iset6, saveit=TRUE)
 
 ##################################################
-# Supplemental Table 2
+# Format table for sensitivity analyses
 ##################################################
 format_supplemental <- function(dset, tableno, saveit=FALSE){
     dset <- dset %>% select(age, site, UCT, CD, LS)
@@ -477,6 +367,72 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
         write_csv(dset, here('data', filename))
     }
 }
+
+##################################################
+# Table 1
+##################################################
+#sset <- read_data(str_glue('seer_merged_2000-2002_followup=15_2021-03-03.csv'))
+
+##################################################
+# Table 2
+##################################################
+#pset <- tribble(~site, ~sensitivity, ~localization,
+#                'Breast', 0.64, 0.96,
+#                'Colon and Rectum', 0.74, 0.97,
+#                'Lung and Bronchus', 0.59, 0.92,
+#                'Ovary', 0.67, 0.96,
+#                'Pancreas', 0.78, 0.79,
+#                'Liver and Intrahepatic Bile Duct', 0.68, 0.72)
+#pset <- pset %>% mutate(Marginal=Sensitivity*Localization)
+
+##################################################
+# Table 3
+##################################################
+#sset <- full_join(sset, pset, by='site')
+#iset6 <- age_analysis_incremental(sset, setdiff(pset$site, 'Breast'))
+#format_empirical(iset6, saveit=TRUE)
+
+##################################################
+# Figure 1
+##################################################
+#hypothetical_uct_plot(saveit=TRUE)
+#hypothetical_cd_plot(saveit=TRUE)
+
+##################################################
+# Figure 2
+##################################################
+#iset1 <- age_analysis_incremental(sset, 'Breast')
+#empirical_age_plot(iset1, sensitivity=FALSE, saveit=TRUE)
+
+##################################################
+# Figure 3
+##################################################
+#iset2 <- age_analysis_incremental(sset, c('Breast', 'Lung and Bronchus'))
+#empirical_age_plot(iset2, sensitivity=FALSE, saveit=TRUE)
+
+##################################################
+# Supplemental Figure 1
+##################################################
+#iset1s <- age_analysis_incremental(sset, 'Breast', effect=0.1)
+#empirical_age_plot(iset1s, sensitivity=TRUE, saveit=TRUE)
+
+##################################################
+# Supplemental Figure 2
+##################################################
+#sset10 <- read_data(str_glue('seer_merged_2000-2002_followup=10_2021-03-03.csv'))
+#iset10 <- age_analysis_incremental(sset, 'Breast')
+#empirical_age_plot(iset10, sensitivity=TRUE, saveit=TRUE)
+
+##################################################
+# Supplemental Table 1
+##################################################
+#hset <- bind_rows(analysis1(specificity=0.95),
+#                  analysis1(specificity=0.99))
+#format_hypothetical(hset, saveit=TRUE)
+
+##################################################
+# Supplemental Table 2
+##################################################
 #format_supplemental(iset1, tableno=2, saveit=TRUE)
 
 ##################################################
