@@ -22,9 +22,10 @@ datestamp <- '2021-03-13'
 # ---------------------------------------
 # P_A                       prevalence (of A)
 # P_A(T+)                   sensitivity (of A)
-# L_A(A│T+)                 localization (of A)
-# (unspecified)             mortality (of A)
-# Sp                        specificity
+# L_A(T+)                   localization (of A)
+# Sp                        overall specificity
+# m                         mortality (of A)
+# r                         mortality reduction (of A)
 ##################################################
 k_cancer_test <- function(dset, specificity=0.99, size=1000){
     # group results by cancer site
@@ -313,7 +314,7 @@ format_hypothetical <- function(dset, saveit=FALSE){
 # Format table for realistic six-cancer test
 ##################################################
 format_empirical <- function(dset, saveit=FALSE){
-    dset <- dset %>% select(-site)
+    dset <- dset %>% select(Test, age, UCT, CD, LS)
     dset <- dset %>% mutate(age=sub('-[567]4', '', age),
                             UCT.CD=UCT/CD,
                             UCT.LS=UCT/LS)
@@ -322,7 +323,6 @@ format_empirical <- function(dset, saveit=FALSE){
                             LS=sprintf('%3.1f', LS),
                             UCT.CD=sprintf('%3.1f', UCT.CD),
                             UCT.LS=sprintf('%3.1f', UCT.LS))
-    dset <- dset %>% arrange(age)
     dset <- dset %>% rename('Screening age, y'='age',
                             'Unnecessary confirmation tests, n'='UCT',
                             'Cancers detected, n'='CD',
@@ -379,7 +379,12 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 #pset <- pset %>% mutate(effect=0.2)
 #sset <- full_join(sset, pset, by='site')
 #iset6 <- age_analysis_incremental(sset, setdiff(pset$site, 'Breast'))
-#format_empirical(iset6, saveit=TRUE)
+#iset6 <- iset6 %>% mutate(Test='Pan-cancer')
+#bset <- sset %>% filter(site == 'Breast')
+#bset <- age_analysis(bset, bset[FALSE, ])
+#bset <- bset %>% mutate(Test='Breast only')
+#cset <- bind_rows(iset6, bset)
+#format_empirical(cset, saveit=TRUE)
 
 ##################################################
 # Figure 1
