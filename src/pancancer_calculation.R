@@ -13,7 +13,8 @@ library(viridis)
 #datestamp <- '2021-03-03'
 #datestamp <- '2021-03-08'
 #datestamp <- '2021-03-12'
-datestamp <- '2021-03-13'
+#datestamp <- '2021-03-13'
+datestamp <- '2021-03-16'
 
 ##################################################
 # Project outcomes for k-cancer test
@@ -49,8 +50,8 @@ k_cancer_test <- function(dset, specificity=0.99, size=1000){
 }
 
 ##################################################
-# Analysis 1: pan-cancer test for two hypothetical
-# cancers across selected scenarios:
+# Pan-cancer test for two hypothetical cancers
+# across selected scenarios:
 # 1. varying sensitivity of both cancers=0.5 to 0.9
 # 2. fixed prevalence of cancer A=0.001
 # 3. varying prevalence of cancer B=0 to 0.01
@@ -118,14 +119,14 @@ read_data <- function(filename){
 ##################################################
 # Age-specific outcomes from SEER data
 ##################################################
-age_analysis <- function(bset, aset){
+age_analysis <- function(bset, aset, specificity=0.99){
     dset <- bind_rows(bset, aset)
     dset <- dset %>% mutate(candidate=unique(bset$site))
     dset <- dset %>% pivot_longer(-c(age, site, candidate),
                                   names_to='feature',
                                   values_to='value')
     dset <- dset %>% group_by(age)
-    dset <- dset %>% do(k_cancer_test(.))
+    dset <- dset %>% do(k_cancer_test(., specificity=specificity))
     dset <- dset %>% ungroup()
 }
 
@@ -239,18 +240,23 @@ hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
 # Visualize outcomes in empirical analysis
 ##################################################
 empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, saveit=FALSE){
-    dset <- dset %>% mutate(UCT.CD=UCT/CD, UCT.LS=UCT/LS)
-    dset <- dset %>% select(-UCT, -CD, -LS)
-    dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS),
+    dset <- dset %>% mutate(UCT.CD=UCT/CD,
+                            UCT.LS_low=UCT/LS_low,
+                            UCT.LS_high=UCT/LS_high,
+                            UCT.LS_span=UCT.LS_low-UCT.LS_high)
+    dset <- dset %>% select(-UCT, -CD, -LS_low, -LS_high, -UCT.LS_low)
+    dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS_high, UCT.LS_span),
                                   names_to='outcome',
                                   values_to='value')
-    dset <- dset %>% ungroup()
     dset <- dset %>% arrange(value)
+    dset <- dset %>% separate(outcome, c('outcome', 'measure'), sep='_', fill='right')
     dset <- dset %>% mutate(age=sub('-[567]4', ' y', age),
                             outcome=factor(outcome,
                                            levels=c('UCT.CD', 'UCT.LS'),
                                            labels=c('Unnecessary\nconfirmation\ntests per cancer\ndetected',
                                                     'Unnecessary\nconfirmation\ntests per life\nsaved')),
+                            measure=ifelse(is.na(measure), 'point', measure),
+                            measure=factor(measure, levels=c('point', 'span', 'high')),
                             site=factor(site, levels=unique(site)))
     if(sensitivity){
         dset <- dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved')
@@ -258,23 +264,26 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
     } else {
         height <- 6
     }
-    ymax <- switch(as.character(figureno), '2'=80, '3'=50, 'S1'=150, 'S2'=80)
-    gg_theme(axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
+    ymax <- switch(as.character(figureno), '2'=300, '3'=50, 'S1'=150, 'S2'=80)
+    gg_theme(legend.position='none',
+             axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
              axis.ticks.x=element_blank(),
-             panel.spacing=unit(0.02, 'npc'),
+             panel.spacing.y=unit(0.04, 'npc'),
              strip.text.y=element_text(size=10, angle=0))
     gg <- ggplot(data=dset)
-    gg <- gg+geom_bar(aes(x=site, y=value),
+    gg <- gg+geom_bar(aes(x=site, y=value, fill=measure),
                       stat='identity',
-                      position='dodge')
+                      position='stack')
     gg <- gg+geom_hline(aes(yintercept=0), colour='black')
     if(!sensitivity)
         gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per cancer\ndetected'), aes(y=8))
     gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved'), aes(y=ymax))
     gg <- gg+facet_grid(outcome~age, scales='free_y')
     gg <- gg+scale_x_discrete(name='')
-    gg <- gg+scale_y_continuous(name='',
-                                expand=c(0, 0))
+    gg <- gg+scale_y_continuous(name='', expand=c(0, 0))
+    gg <- gg+scale_fill_manual(name='', values=c(point='gray40',
+                                                 high='gray40',
+                                                 span='gray80'))
     print(gg)
     if(saveit){
         filename <- str_glue('figure{figureno}_{datestamp}')
@@ -383,7 +392,11 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 #bset <- sset %>% filter(site == 'Breast')
 #bset <- age_analysis(bset, bset[FALSE, ])
 #bset <- bset %>% mutate(Test='Breast only')
-#cset <- bind_rows(iset6, bset)
+#mset <- sset %>% filter(site == 'Breast')
+#mset <- mset %>% mutate(sensitivity=0.869, localization=1)
+#mset <- age_analysis(mset, mset[FALSE, ], specificity=0.889)
+#mset <- mset %>% mutate(Test='Mammography')
+#cset <- bind_rows(iset6, bset, mset)
 #format_empirical(cset, saveit=TRUE)
 
 ##################################################
@@ -395,7 +408,10 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 ##################################################
 # Figure 2
 ##################################################
-#iset1 <- age_analysis_incremental(sset, 'Breast')
+#lset <- sset %>% mutate(effect=0.05)
+#iset1l <- age_analysis_incremental(lset, 'Breast')
+#iset1h <- age_analysis_incremental(sset, 'Breast')
+#iset1 <- full_join(iset1l, iset1h, by=c('site', 'age', 'UCT', 'CD'), suffix=c('_low', '_high'))
 #empirical_age_plot(iset1, figureno=2, sensitivity=FALSE, saveit=TRUE)
 
 ##################################################
