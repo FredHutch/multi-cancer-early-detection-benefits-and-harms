@@ -14,7 +14,8 @@ library(viridis)
 #datestamp <- '2021-03-08'
 #datestamp <- '2021-03-12'
 #datestamp <- '2021-03-13'
-datestamp <- '2021-03-16'
+#datestamp <- '2021-03-16'
+datestamp <- '2021-03-17'
 
 ##################################################
 # Project outcomes for k-cancer test
@@ -109,7 +110,7 @@ read_data <- function(filename){
                                                  'Ovary',
                                                  'Pancreas'),
                                         labels=c('Breast',
-                                                 'Colon',
+                                                 'Colorectal',
                                                  'Liver',
                                                  'Lung',
                                                  'Ovary',
@@ -240,23 +241,31 @@ hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
 # Visualize outcomes in empirical analysis
 ##################################################
 empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, saveit=FALSE){
-    dset <- dset %>% mutate(UCT.CD=UCT/CD,
-                            UCT.LS_low=UCT/LS_low,
-                            UCT.LS_high=UCT/LS_high,
-                            UCT.LS_span=UCT.LS_low-UCT.LS_high)
-    dset <- dset %>% select(-UCT, -CD, -LS_low, -LS_high, -UCT.LS_low)
-    dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS_high, UCT.LS_span),
-                                  names_to='outcome',
-                                  values_to='value')
+    if(any(grepl('_low$', names(dset)))){
+        dset <- dset %>% mutate(UCT.CD=UCT/CD,
+                                UCT.LS_low=UCT/LS_low,
+                                UCT.LS_high=UCT/LS_high)
+        dset <- dset %>% select(-UCT, -CD, -LS_low, -LS_high)
+        dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS_low, UCT.LS_high),
+                                      names_to='outcome',
+                                      values_to='value')
+        dset <- dset %>% separate(outcome, c('outcome', 'assumption'), sep='_', fill='right')
+        dset <- dset %>% mutate(assumption=ifelse(is.na(assumption), 'point', assumption),
+                                assumption=factor(assumption, levels=c('point', 'high', 'low')))
+    } else {
+        dset <- dset %>% mutate(UCT.CD=UCT/CD, UCT.LS=UCT/LS)
+        dset <- dset %>% select(-UCT, -CD, -LS)
+        dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS),
+                                      names_to='outcome',
+                                      values_to='value')
+        dset <- dset %>% mutate(assumption='high')
+    }
     dset <- dset %>% arrange(value)
-    dset <- dset %>% separate(outcome, c('outcome', 'measure'), sep='_', fill='right')
     dset <- dset %>% mutate(age=sub('-[567]4', ' y', age),
                             outcome=factor(outcome,
                                            levels=c('UCT.CD', 'UCT.LS'),
                                            labels=c('Unnecessary\nconfirmation\ntests per cancer\ndetected',
                                                     'Unnecessary\nconfirmation\ntests per life\nsaved')),
-                            measure=ifelse(is.na(measure), 'point', measure),
-                            measure=factor(measure, levels=c('point', 'span', 'high')),
                             site=factor(site, levels=unique(site)))
     if(sensitivity){
         dset <- dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved')
@@ -264,26 +273,28 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
     } else {
         height <- 6
     }
-    ymax <- switch(as.character(figureno), '2'=300, '3'=50, 'S1'=150, 'S2'=80)
+    ymax <- switch(as.character(figureno), '2'=300, '3'=200, 'S1'=150, 'S2'=80)
     gg_theme(legend.position='none',
              axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
              axis.ticks.x=element_blank(),
              panel.spacing.y=unit(0.04, 'npc'),
              strip.text.y=element_text(size=10, angle=0))
     gg <- ggplot(data=dset)
-    gg <- gg+geom_bar(aes(x=site, y=value, fill=measure),
+    gg <- gg+geom_bar(aes(x=site, y=value, fill=assumption),
                       stat='identity',
-                      position='stack')
+                      position='dodge')
     gg <- gg+geom_hline(aes(yintercept=0), colour='black')
     if(!sensitivity)
         gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per cancer\ndetected'), aes(y=8))
     gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved'), aes(y=ymax))
     gg <- gg+facet_grid(outcome~age, scales='free_y')
     gg <- gg+scale_x_discrete(name='')
+    if(!sensitivity)
+        gg <- gg+labs(tag=paste('Figure', figureno))
     gg <- gg+scale_y_continuous(name='', expand=c(0, 0))
     gg <- gg+scale_fill_manual(name='', values=c(point='gray40',
                                                  high='gray40',
-                                                 span='gray80'))
+                                                 low='gray80'))
     print(gg)
     if(saveit){
         filename <- str_glue('figure{figureno}_{datestamp}')
@@ -348,17 +359,24 @@ format_empirical <- function(dset, saveit=FALSE){
 # Format table for sensitivity analyses
 ##################################################
 format_supplemental <- function(dset, tableno, saveit=FALSE){
-    dset <- dset %>% select(age, site, UCT, CD, LS)
-    dset <- dset %>% mutate(age=sub('-[567]4', '', age))
-    dset <- dset %>% mutate(UCT=sprintf('%4.1f', UCT),
+    dset <- dset %>% select(age, site, UCT, CD, LS_low, LS_high)
+    dset <- dset %>% mutate(age=sub('-[567]4', '', age),
+                            site=factor(site, levels=c('Lung',
+                                                       'Colorectal',
+                                                       'Ovary',
+                                                       'Pancreas',
+                                                       'Liver')),
+                            UCT=sprintf('%4.1f', UCT),
                             CD=sprintf('%3.1f', CD),
-                            LS=sprintf('%3.1f', LS))
+                            LS_low=sprintf('%3.1f', LS_low),
+                            LS_high=sprintf('%3.1f', LS_high))
     dset <- dset %>% arrange(age, site)
     dset <- dset %>% rename('Tissue of origin'='site',
                             'Screening age, y'='age',
                             'Unnecessary confirmation tests, n'='UCT',
                             'Cancers detected, n'='CD',
-                            'Lives saved, n'='LS')
+                            'Lives saved (5%), n'='LS_low',
+                            'Lives saved (20%), n'='LS_high')
     if(saveit){
         filename <- str_glue('supplemental_table{tableno}_{datestamp}.csv')
         write_csv(dset, here('data', filename))
@@ -375,7 +393,7 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 ##################################################
 #pset <- tribble(~site, ~sensitivity, ~localization,
 #                'Breast',   0.64, 0.96,
-#                'Colon',    0.74, 0.97,
+#                'Colorectal',    0.74, 0.97,
 #                'Lung',     0.59, 0.92,
 #                'Ovary',    0.67, 0.96,
 #                'Pancreas', 0.78, 0.79,
@@ -412,18 +430,20 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 #iset1l <- age_analysis_incremental(lset, 'Breast')
 #iset1h <- age_analysis_incremental(sset, 'Breast')
 #iset1 <- full_join(iset1l, iset1h, by=c('site', 'age', 'UCT', 'CD'), suffix=c('_low', '_high'))
-#empirical_age_plot(iset1, figureno=2, sensitivity=FALSE, saveit=TRUE)
+#empirical_age_plot(iset1, figureno=2, ext='pdf', saveit=TRUE)
 
 ##################################################
 # Figure 3
 ##################################################
-#iset2 <- age_analysis_incremental(sset, c('Breast', 'Lung'))
-#empirical_age_plot(iset2, figureno=3, sensitivity=FALSE, saveit=TRUE)
+#iset2l <- age_analysis_incremental(lset, c('Breast', 'Lung'))
+#iset2h <- age_analysis_incremental(sset, c('Breast', 'Lung'))
+#iset2 <- full_join(iset2l, iset2h, by=c('site', 'age', 'UCT', 'CD'), suffix=c('_low', '_high'))
+#empirical_age_plot(iset2, figureno=3, ext='pdf', saveit=TRUE)
 
 ##################################################
 # Supplemental Figure 1
 ##################################################
-#sset1s <- sset %>% mutate(effect=ifelse(site %in% c('Breast', 'Colon', 'Lung'), 0.1, 0.5))
+#sset1s <- sset %>% mutate(effect=ifelse(site %in% c('Breast', 'Colorectal', 'Lung'), 0.1, 0.5))
 #iset1s <- age_analysis_incremental(sset1s, 'Breast')
 #empirical_age_plot(iset1s, figureno='S1', sensitivity=TRUE, saveit=TRUE)
 
