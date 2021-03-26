@@ -1,30 +1,31 @@
 ##################################################
 # Read and merge SEER incidence and incidence-based
-# mortality data for women diagnosed with 1 of 6
-# cancers at ages 50-54, 60-64, or 70-74 in the
-# calendar period 2000-2002 and 10- or 15-year
+# mortality data by sex, race, and primary site
+# diagnosed at ages 50-54, 60-64, or 70-74 in the
+# calendar period 2000-2002 with 10- or 15-year
 # follow-up for cancer death
 ##################################################
 library(tidyverse)
 library(here)
 
-#datestamp <- '2021-01-07'
-datestamp <- '2021-03-03'
+datestamp <- '2021-03-26'
 
 ##################################################
 # Specify filenames for SEER data
 ##################################################
-fset <- tibble(incfile='seer_incidence_2000-2002_group=5.csv',
-               ibmfile=str_glue('seer_ibm_2000-2002_followup={c(10, 15)}.csv'))
+fset <- tibble(incfile='seer_incidence_2000-2002_group=5_extended.csv',
+               ibmfile=str_glue('seer_ibm_2000-2002_followup={c(10, 15)}_extended.csv'))
 
 ##################################################
 # Read and format SEER data
 ##################################################
 read_data <- function(filename, radix=1e5){
-    dset <- read_csv(here('data', filename), col_types='ccdddddd')
+    dset <- read_csv(here('data', filename), col_types='ccccdddddd')
     dset <- dset %>% select(-'Standard Error')
-    dset <- dset %>% rename(Age='Age recode (50-54, 60-64, 70-74)',
-                            Site='Site recode (lung, breast, colorectum, ovary, pancreas, liver)',
+    dset <- dset %>% rename(Sex='Sex (Male, Female)',
+                            Race='Race recode (All, Black)',
+                            Age='Age recode (50-54, 60-64, 70-74)',
+                            Site='Primary Site - labeled',
                             Rate='Crude Rate',
                             Lower='Lower Confidence Interval',
                             Upper='Upper Confidence Interval')
@@ -56,7 +57,7 @@ read_data <- function(filename, radix=1e5){
 control <- function(fset, saveit=FALSE){
     iset <- read_data(fset$incfile)
     mset <- read_data(fset$ibmfile)
-    dset <- full_join(iset, mset, by=c('Age', 'Site'))
+    dset <- full_join(iset, mset, by=c('Sex', 'Race', 'Age', 'Site'))
     dset <- dset %>% mutate(Death.Rate=Death.Count/Population,
                             Death.Lower=Death.Lower/Population,
                             Death.Upper=Death.Upper/Population)
@@ -73,7 +74,7 @@ control <- function(fset, saveit=FALSE){
                             Death.Upper)
     if(saveit){
         followup <- str_extract(fset$ibmfile, 'followup=(10|15)')
-        outfile <- str_glue('seer_merged_2000-2002_{followup}_{datestamp}.csv')
+        outfile <- str_glue('seer_merged_2000-2002_{followup}_{datestamp}_extended.csv')
         write_csv(dset, here('data', outfile))
     }
     return(dset)
