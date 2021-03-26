@@ -1,2 +1,2 @@
 # pancancer-testing-benefits-and-harms
-Model of benefits and harms of using a two-cancer test vs one- or two single-cancer tests
+Code and data used to develop a quantitative framework to examine harms and benefits of mult-cancer early detection testing
