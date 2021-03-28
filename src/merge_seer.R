@@ -11,10 +11,11 @@ library(here)
 datestamp <- '2021-03-26'
 
 ##################################################
-# Specify filenames for SEER data
+# Specify filenames for SEER data and target cancers
 ##################################################
 fset <- tibble(incfile='seer_incidence_2000-2002_group=5_extended.csv',
-               ibmfile=str_glue('seer_ibm_2000-2002_followup={c(10, 15)}_extended.csv'))
+               ibmfile=str_glue('seer_ibm_2000-2002_followup={c(10, 15)}_extended.csv'),
+               cancersfile='cancers_2021-03-28.csv')
 
 ##################################################
 # Read and format SEER data
@@ -25,7 +26,7 @@ read_data <- function(filename, radix=1e5){
     dset <- dset %>% rename(Sex='Sex (Male, Female)',
                             Race='Race recode (All, Black)',
                             Age='Age recode (50-54, 60-64, 70-74)',
-                            Site='Primary Site - labeled',
+                            Site='Site recode ICD-O-3/WHO 2008 (Liu et al groupings)',
                             Rate='Crude Rate',
                             Lower='Lower Confidence Interval',
                             Upper='Upper Confidence Interval')
@@ -52,6 +53,12 @@ read_data <- function(filename, radix=1e5){
 }
 
 ##################################################
+# Read and format target cancers
+##################################################
+read_cancers <- function(filename)
+    read_csv(here('data', filename), comment='#', col_types='c')
+
+##################################################
 # Control analysis
 ##################################################
 control <- function(fset, saveit=FALSE){
@@ -61,7 +68,9 @@ control <- function(fset, saveit=FALSE){
     dset <- dset %>% mutate(Death.Rate=Death.Count/Population,
                             Death.Lower=Death.Lower/Population,
                             Death.Upper=Death.Upper/Population)
-    dset <- dset %>% select(Age,
+    dset <- dset %>% select(Sex,
+                            Race,
+                            Age,
                             Site,
                             Population,
                             Diagnosis.Count,
@@ -72,9 +81,11 @@ control <- function(fset, saveit=FALSE){
                             Death.Rate,
                             Death.Lower,
                             Death.Upper)
+    cset <- read_cancers(fset$cancersfile)
+    dset <- left_join(cset, dset, by='Site')
     if(saveit){
         followup <- str_extract(fset$ibmfile, 'followup=(10|15)')
-        outfile <- str_glue('seer_merged_2000-2002_{followup}_{datestamp}_extended.csv')
+        outfile <- str_glue('seer_merged_2000-2002_{followup}_extended_{datestamp}.csv')
         write_csv(dset, here('data', outfile))
     }
     return(dset)
