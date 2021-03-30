@@ -80,6 +80,18 @@ age_analysis <- function(bset, aset, specificity=0.99){
 }
 
 ##################################################
+# Quantify harms and benefits for initial site
+##################################################
+single_cancer_test <- function(dset, specificity=0.99){
+    dset <- dset %>% pivot_longer(-site,
+                                  names_to='feature',
+                                  values_to='value')
+    dset <- dset %>% group_by(site)
+    dset <- dset %>% do(k_cancer_test(., specificity=specificity))
+    dset <- dset %>% ungroup()
+}
+
+##################################################
 # Age-specific incremental impact of candidate cancer
 ##################################################
 age_analysis_incremental <- function(dset, existing){
@@ -99,7 +111,7 @@ gg_theme <- function(...){
                  axis.line=element_line(colour='darkgray'),
                  axis.title=element_text(size=14),
                  axis.ticks=element_blank(),
-                 axis.ticks.length=unit(0.2, 'cm'),
+                 axis.ticks.length=unit(0.15, 'cm'),
                  panel.border=element_rect(fill=NA, colour='darkgray'),
                  panel.background=element_rect(fill='lightgray'),
                  strip.background=element_rect(colour=NA, fill=NA),
@@ -158,6 +170,56 @@ seer_heatmap <- function(dset,
                width=10)
     }
     return(gg)
+}
+
+##################################################
+# Visualize outcomes in empirical analysis
+##################################################
+single_cancer_plot <- function(dset, Race, ext='png', saveit=FALSE){
+    dset <- dset %>% unnest(cols=data)
+    dset <- dset %>% filter(race == Race)
+    dset <- dset %>% select(-race, -UCT)
+    dset <- dset %>% pivot_longer(-c(sex, age, site),
+                                  names_to='outcome',
+                                  values_to='value')
+    dset <- dset %>% mutate(age=factor(sub('-[567]4', ' y', age)),
+                            site=factor(site, levels=rev(sort(unique(site)))),
+                            outcome=factor(outcome,
+                                           levels=c('CD', 'LS'),
+                                           labels=c('Cancers detected',
+                                                    'Lives saved')))
+    gg_theme(axis.ticks.x=element_line(colour='black'))
+    gg <- ggplot(data=dset)
+    gg <- gg+geom_point(aes(x=value,
+                            y=site,
+                            alpha=outcome,
+                            fill=outcome),
+                        shape=21,
+                        size=1.75,
+                        show.legend=c(alpha=FALSE, fill=TRUE))
+    gg <- gg+facet_grid(.~sex+age)
+    gg <- gg+scale_x_continuous(name='',
+                                limits=c(0, 10),
+                                breaks=seq(0, 10, by=2))
+    gg <- gg+scale_y_discrete(name='')
+    gg <- gg+geom_hline(yintercept=seq(1.5, nlevels(dset$site)-0.5),
+                        colour='darkgray')
+    gg <- gg+scale_alpha_manual(values=c('Cancers detected'=1,
+                                         'Lives saved'=0.65))
+    gg <- gg+scale_fill_viridis(name='Expected outcomes\nper 1,000 persons',
+                                discrete=TRUE,
+                                begin=0.25,
+                                end=0.75,
+                                guide=guide_legend(title.hjust=0.5))
+    print(gg)
+    if(saveit){
+        filename <- str_glue('single_{tolower(Race)}_{datestamp}')
+        filename <- paste(filename, ext, sep='.')
+        ggsave(here('plots', filename),
+               plot=gg,
+               width=12,
+               height=10)
+    }
 }
 
 ##################################################
@@ -257,24 +319,37 @@ format_empirical <- function(dset, saveit=FALSE){
 #################################################
 # Read extended merged data
 ##################################################
-dset <- read_data('seer_merged_2000-2002_followup=15_extended_2021-03-26.csv')
+#dset <- read_data('seer_merged_2000-2002_followup=15_extended_2021-03-26.csv')
 
 ##################################################
 # Visualize heatmap of SEER data
 ##################################################
-seer_heatmap(dset, 'All', saveit=TRUE)
-seer_heatmap(dset, 'Black', saveit=TRUE)
+#seer_heatmap(dset, 'All', saveit=TRUE)
+#seer_heatmap(dset, 'Black', saveit=TRUE)
 
 ##################################################
 # Specify default sensitivity, localization probability
 # and mortality reduction
 ##################################################
-dset <- dset %>% mutate(sensitivity=0.67,
-                        localization=0.90,
-                        effect=0.05)
+#dset <- dset %>% mutate(sensitivity=0.67,
+#                        localization=0.90,
+#                        effect=0.05)
 
 ##################################################
-# Visualize
+# Single-cancer test harms and benefits
+##################################################
+#sset <- dset %>% group_by(sex, race, age)
+#sset <- sset %>% nest()
+#sset <- sset %>% mutate(data=map(data, single_cancer_test))
+#sset <- sset %>% ungroup()
+
+##################################################
+# Visualize single-cancer test harms and benefits
+##################################################
+single_cancer_plot(sset, 'All', saveit=TRUE)
+single_cancer_plot(sset, 'Black', saveit=TRUE)
+
+##################################################
 ##################################################
 #pset <- pset %>% mutate(effect=0.2)
 #sset <- full_join(sset, pset, by='site')
