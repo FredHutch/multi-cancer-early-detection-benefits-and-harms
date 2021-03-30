@@ -117,7 +117,8 @@ seer_heatmap <- function(dset,
                          ext='png',
                          saveit=FALSE){
     dset <- dset %>% filter(race == Race)
-    dset <- dset %>% mutate(age=factor(sub('-[567]4', ' y', age)),
+    dset <- dset %>% mutate(age=factor(age),
+                            #age=factor(sub('-[567]4', ' y', age)),
                             site=factor(site, levels=rev(sort(unique(site)))),
                             prevalence=ifelse(prevalence == 0,
                                               smidgen,
@@ -128,7 +129,7 @@ seer_heatmap <- function(dset,
     gg <- gg+geom_tile(aes(x=age, y=site, fill=prevalence))
     gg <- gg+geom_point(aes(x=age, y=site, size=mortality))
     gg <- gg+facet_grid(.~sex)
-    gg <- gg+scale_fill_viridis(name='5-year prevalence\nper 100,000\n',
+    gg <- gg+scale_fill_viridis(name='Incidence rate\nper 100,000\n',
                                 trans='log10',
                                 option='cividis',
                                 limits=c(0.1, 2000),
@@ -136,7 +137,7 @@ seer_heatmap <- function(dset,
                                 guide=guide_colourbar(nbin=500,
                                                       title.hjust=0.5,
                                                       ticks=FALSE))
-    gg <- gg+scale_size_continuous(name='15-year mortality\nper 100,000\n',
+    gg <- gg+scale_size_continuous(name='15-year IBM rate\nper 100,000\n',
                                    limits=c(0.1, 1000),
                                    breaks=c(1, 10, 100, 1000),
                                    range=c(0, 4),
