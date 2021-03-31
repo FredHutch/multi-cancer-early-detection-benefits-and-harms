@@ -10,7 +10,9 @@ library(here)
 library(scales)
 library(viridis)
 
-datestamp <- '2021-03-26'
+#datestamp <- '2021-03-26'
+#datestamp <- '2021-03-30'
+datestamp <- '2021-03-31'
 
 ##################################################
 # Project outcomes for k-cancer test
@@ -66,20 +68,6 @@ read_data <- function(filename){
 }
 
 ##################################################
-# Age-specific outcomes from SEER data
-##################################################
-age_analysis <- function(bset, aset, specificity=0.99){
-    dset <- bind_rows(bset, aset)
-    dset <- dset %>% mutate(candidate=unique(bset$site))
-    dset <- dset %>% pivot_longer(-c(age, site, candidate),
-                                  names_to='feature',
-                                  values_to='value')
-    dset <- dset %>% group_by(age)
-    dset <- dset %>% do(k_cancer_test(., specificity=specificity))
-    dset <- dset %>% ungroup()
-}
-
-##################################################
 # Quantify harms and benefits for initial site
 ##################################################
 single_cancer_test <- function(dset, specificity=0.99){
@@ -89,17 +77,6 @@ single_cancer_test <- function(dset, specificity=0.99){
     dset <- dset %>% group_by(site)
     dset <- dset %>% do(k_cancer_test(., specificity=specificity))
     dset <- dset %>% ungroup()
-}
-
-##################################################
-# Age-specific incremental impact of candidate cancer
-##################################################
-age_analysis_incremental <- function(dset, existing){
-    aset <- dset %>% filter(site %in% existing)
-    bset <- dset %>% filter(!site %in% existing)
-    bset <- bset %>% group_by(site)
-    rset <- bset %>% do(age_analysis(., aset))
-    rset <- rset %>% ungroup()
 }
 
 ##################################################
@@ -173,7 +150,7 @@ seer_heatmap <- function(dset,
 }
 
 ##################################################
-# Visualize outcomes in empirical analysis
+# Visualize single-cancer test outcomes
 ##################################################
 single_cancer_plot <- function(dset, Race, ext='png', saveit=FALSE){
     dset <- dset %>% unnest(cols=data)
@@ -188,7 +165,8 @@ single_cancer_plot <- function(dset, Race, ext='png', saveit=FALSE){
                                            levels=c('CD', 'LS'),
                                            labels=c('Cancers detected',
                                                     'Lives saved')))
-    gg_theme(axis.ticks.x=element_line(colour='black'))
+    gg_theme(panel.grid.major.x=element_line(colour='darkgray'),
+             axis.ticks.x=element_line(colour='black'))
     gg <- ggplot(data=dset)
     gg <- gg+geom_point(aes(x=value,
                             y=site,
@@ -223,96 +201,70 @@ single_cancer_plot <- function(dset, Race, ext='png', saveit=FALSE){
 }
 
 ##################################################
-# Visualize outcomes in empirical analysis
+# Visualize MCED outcomes
 ##################################################
-empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, saveit=FALSE){
-    if(any(grepl('_low$', names(dset)))){
-        dset <- dset %>% mutate(UCT.CD=UCT/CD,
-                                UCT.LS_low=UCT/LS_low,
-                                UCT.LS_high=UCT/LS_high)
-        dset <- dset %>% select(-UCT, -CD, -LS_low, -LS_high)
-        dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS_low, UCT.LS_high),
-                                      names_to='outcome',
-                                      values_to='value')
-        dset <- dset %>% separate(outcome, c('outcome', 'assumption'), sep='_', fill='right')
-        dset <- dset %>% mutate(assumption=ifelse(is.na(assumption), 'point', assumption),
-                                assumption=factor(assumption, levels=c('point', 'high', 'low')))
-    } else {
-        dset <- dset %>% mutate(UCT.CD=UCT/CD, UCT.LS=UCT/LS)
-        dset <- dset %>% select(-UCT, -CD, -LS)
-        dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS),
-                                      names_to='outcome',
-                                      values_to='value')
-        dset <- dset %>% mutate(assumption='high')
-    }
-    dset <- dset %>% arrange(value)
-    dset <- dset %>% mutate(age=sub('-[567]4', ' y', age),
-                            outcome=factor(outcome,
-                                           levels=c('UCT.CD', 'UCT.LS'),
-                                           labels=c('Unnecessary\nconfirmation\ntests per cancer\ndetected',
-                                                    'Unnecessary\nconfirmation\ntests per life\nsaved')),
-                            site=factor(site, levels=unique(site)))
-    if(sensitivity){
-        dset <- dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved')
-        height <- 4
-    } else {
-        height <- 6
-    }
-    ymax <- switch(as.character(figureno), '2'=300, '3'=200, 'S1'=150, 'S2'=80)
-    gg_theme(legend.position='none',
-             axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
-             axis.ticks.x=element_blank(),
-             panel.spacing.y=unit(0.04, 'npc'),
-             strip.text.y=element_text(size=10, angle=0))
-    gg <- ggplot(data=dset)
-    gg <- gg+geom_bar(aes(x=site, y=value, fill=assumption),
-                      stat='identity',
-                      position='dodge')
-    gg <- gg+geom_hline(aes(yintercept=0), colour='black')
-    if(!sensitivity)
-        gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per cancer\ndetected'), aes(y=8))
-    gg <- gg+geom_blank(data=dset %>% filter(outcome == 'Unnecessary\nconfirmation\ntests per life\nsaved'), aes(y=ymax))
-    gg <- gg+facet_grid(outcome~age, scales='free_y')
-    gg <- gg+scale_x_discrete(name='')
-    if(!sensitivity)
-        gg <- gg+labs(tag=paste('Figure', figureno))
-    gg <- gg+scale_y_continuous(name='', expand=c(0, 0))
-    gg <- gg+scale_fill_manual(name='', values=c(point='gray40',
-                                                 high='gray40',
-                                                 low='gray80'))
+k_cancer_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
+    dset <- dset %>% filter(sex == Sex, race == Race)
+    dset <- dset %>% arrange(desc(age), desc(CD))
+    dset <- dset %>% mutate(age=factor(sub('-[567]4', ' y', age)),
+                            site=factor(site, levels=rev(unique(site))))
+    dset <- dset %>% group_by(age)
+    dset <- dset %>% mutate(Minimum.UCT=log10(UCT),
+                            Maximum.UCT=log10(cumsum(UCT)),
+                            CD=cumsum(CD),
+                            LS=cumsum(LS))
+    dset <- dset %>% select(-sex, -race, -UCT)
+    lset <- dset %>% pivot_longer(-c(age, site),
+                                  names_to='outcome',
+                                  values_to='value')
+    lset <- lset %>% mutate(outcome=factor(outcome,
+                                           levels=c('Minimum.UCT',
+                                                    'Maximum.UCT',
+                                                    'CD',
+                                                    'LS'),
+                                           labels=c('Minimum UCTs (log scale)',
+                                                    'Maximum UCTs (log scale)',
+                                                    'Cancers detected',
+                                                    'Lives saved')))
+    gg_theme(panel.grid.major.x=element_line(colour='darkgray'),
+             axis.ticks.x=element_line(colour='black'))
+    gg <- ggplot(data=lset)
+    gg <- gg+geom_point(aes(x=value,
+                            y=site,
+                            fill=outcome),
+                        size=1.75,
+                        alpha=0.8,
+                        shape=21)
+    gg <- gg+geom_segment(data=dset,
+                          aes(x=Minimum.UCT,
+                              xend=Maximum.UCT,
+                              y=site,
+                              yend=site),
+                          colour='#482576FF',
+                          size=2,
+                          alpha=0.4,
+                          show.legend=FALSE)
+    gg <- gg+facet_grid(.~age)
+    gg <- gg+scale_x_continuous(name='',
+                                limits=c(0, 20),
+                                breaks=seq(0, 20, by=2))
+    gg <- gg+scale_y_discrete(name='')
+    gg <- gg+geom_hline(yintercept=seq(1.5, nlevels(dset$site)-0.5),
+                        colour='darkgray')
+    gg <- gg+scale_fill_manual(name='Expected outcomes\nper 1,000 persons',
+                           values=c('Lives saved'='#BBDF27FF',
+                                    'Cancers detected'='#21908CFF',
+                                    'Minimum UCTs (log scale)'='#482576FF',
+                                    'Maximum UCTs (log scale)'='#482576FF'),
+                                guide=guide_legend(title.hjust=0.5))
     print(gg)
     if(saveit){
-        filename <- str_glue('figure{figureno}_{datestamp}')
+        filename <- str_glue('multi_{tolower(Sex)}_{tolower(Race)}_{datestamp}')
         filename <- paste(filename, ext, sep='.')
         ggsave(here('plots', filename),
                plot=gg,
-               width=8,
-               height=height)
-    }
-}
-
-##################################################
-# Format table for realistic six-cancer test
-##################################################
-format_empirical <- function(dset, saveit=FALSE){
-    dset <- dset %>% select(Test, age, UCT, CD, LS)
-    dset <- dset %>% mutate(age=sub('-[567]4', '', age),
-                            UCT.CD=UCT/CD,
-                            UCT.LS=UCT/LS)
-    dset <- dset %>% mutate(UCT=sprintf('%4.1f', UCT),
-                            CD=sprintf('%3.1f', CD),
-                            LS=sprintf('%3.1f', LS),
-                            UCT.CD=sprintf('%3.1f', UCT.CD),
-                            UCT.LS=sprintf('%3.1f', UCT.LS))
-    dset <- dset %>% rename('Screening age, y'='age',
-                            'Unnecessary confirmation tests, n'='UCT',
-                            'Cancers detected, n'='CD',
-                            'Lives saved, n'='LS',
-                            'UCT/CD'='UCT.CD',
-                            'UCT/LS'='UCT.LS')
-    if(saveit){
-        filename <- str_glue('table3_{datestamp}.csv')
-        write_csv(dset, here('data', filename))
+               width=12,
+               height=10)
     }
 }
 
@@ -350,42 +302,16 @@ single_cancer_plot(sset, 'All', saveit=TRUE)
 single_cancer_plot(sset, 'Black', saveit=TRUE)
 
 ##################################################
+# MCED test harms and benefits
 ##################################################
-#pset <- pset %>% mutate(effect=0.2)
-#sset <- full_join(sset, pset, by='site')
-#iset6 <- age_analysis_incremental(sset, setdiff(pset$site, 'Breast'))
-#iset6 <- iset6 %>% mutate(Test='Pan-cancer')
-#bset <- sset %>% filter(site == 'Breast')
-#bset <- age_analysis(bset, bset[FALSE, ])
-#bset <- bset %>% mutate(Test='Breast only')
-#mset <- sset %>% filter(site == 'Breast')
-#mset <- mset %>% mutate(sensitivity=0.869, localization=1)
-#mset <- age_analysis(mset, mset[FALSE, ], specificity=0.889)
-#mset <- mset %>% mutate(Test='Mammography')
-#cset <- bind_rows(iset6, bset, mset)
-#format_empirical(cset, saveit=TRUE)
+#mset <- sset %>% unnest(data)
+#mset <- mset %>% ungroup()
 
 ##################################################
-# Figure 2
+# Visualize MCED test harms and benefits
 ##################################################
-#lset <- sset %>% mutate(effect=0.05)
-#iset1l <- age_analysis_incremental(lset, 'Breast')
-#iset1h <- age_analysis_incremental(sset, 'Breast')
-#iset1 <- full_join(iset1l, iset1h, by=c('site', 'age', 'UCT', 'CD'), suffix=c('_low', '_high'))
-#empirical_age_plot(iset1, figureno=2, ext='pdf', saveit=TRUE)
-
-##################################################
-# Figure 3
-##################################################
-#iset2l <- age_analysis_incremental(lset, c('Breast', 'Lung'))
-#iset2h <- age_analysis_incremental(sset, c('Breast', 'Lung'))
-#iset2 <- full_join(iset2l, iset2h, by=c('site', 'age', 'UCT', 'CD'), suffix=c('_low', '_high'))
-#empirical_age_plot(iset2, figureno=3, ext='pdf', saveit=TRUE)
-
-##################################################
-# Supplemental Figure 1
-##################################################
-#sset1s <- sset %>% mutate(effect=ifelse(site %in% c('Breast', 'Colorectal', 'Lung'), 0.1, 0.5))
-#iset1s <- age_analysis_incremental(sset1s, 'Breast')
-#empirical_age_plot(iset1s, figureno='S1', sensitivity=TRUE, saveit=TRUE)
+k_cancer_plot(mset, 'Female', 'All', saveit=TRUE)
+k_cancer_plot(mset, 'Male', 'All', saveit=TRUE)
+#k_cancer_plot(mset, 'Female', 'Black', saveit=TRUE)
+#k_cancer_plot(mset, 'Male', 'Black', saveit=TRUE)
 
