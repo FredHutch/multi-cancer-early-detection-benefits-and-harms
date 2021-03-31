@@ -15,7 +15,7 @@ datestamp <- '2021-03-26'
 ##################################################
 fset <- tibble(incfile='seer_incidence_2000-2002_group=5_extended.csv',
                ibmfile=str_glue('seer_ibm_2000-2002_followup={c(10, 15)}_extended.csv'),
-               cancersfile='cancers_2021-03-28.csv')
+               cancersfile='cancers_2021-03-26.csv')
 
 ##################################################
 # Read and format SEER data
