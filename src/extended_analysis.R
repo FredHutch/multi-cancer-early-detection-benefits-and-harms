@@ -184,11 +184,10 @@ single_cancer_plot <- function(dset, Race, ext='png', saveit=FALSE){
                         colour='darkgray')
     gg <- gg+scale_alpha_manual(values=c('Cancers detected'=1,
                                          'Lives saved'=0.65))
-    gg <- gg+scale_fill_viridis(name='Expected outcomes\nper 1,000 persons',
-                                discrete=TRUE,
-                                begin=0.25,
-                                end=0.75,
-                                guide=guide_legend(title.hjust=0.5))
+    gg <- gg+scale_fill_manual(name='Expected outcomes\nper 1,000 persons',
+                               values=c('Cancers detected'='#3B528BFF',
+                                        'Lives saved'='#5DC863FF'),
+                               guide=guide_legend(title.hjust=0.5))
     print(gg)
     if(saveit){
         filename <- str_glue('single_{tolower(Race)}_{datestamp}')
@@ -201,30 +200,22 @@ single_cancer_plot <- function(dset, Race, ext='png', saveit=FALSE){
 }
 
 ##################################################
-# Visualize MCED outcomes
+# Visualize absolute MCED outcomes
 ##################################################
-k_cancer_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
+absolute_mced_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
     dset <- dset %>% filter(sex == Sex, race == Race)
     dset <- dset %>% arrange(desc(age), desc(CD))
     dset <- dset %>% mutate(age=factor(sub('-[567]4', ' y', age)),
                             site=factor(site, levels=rev(unique(site))))
     dset <- dset %>% group_by(age)
-    dset <- dset %>% mutate(Minimum.UCT=log10(UCT),
-                            Maximum.UCT=log10(cumsum(UCT)),
-                            CD=cumsum(CD),
-                            LS=cumsum(LS))
+    dset <- dset %>% mutate(CD=cumsum(CD), LS=cumsum(LS))
     dset <- dset %>% select(-sex, -race, -UCT)
     lset <- dset %>% pivot_longer(-c(age, site),
                                   names_to='outcome',
                                   values_to='value')
     lset <- lset %>% mutate(outcome=factor(outcome,
-                                           levels=c('Minimum.UCT',
-                                                    'Maximum.UCT',
-                                                    'CD',
-                                                    'LS'),
-                                           labels=c('Minimum UCTs (log scale)',
-                                                    'Maximum UCTs (log scale)',
-                                                    'Cancers detected',
+                                           levels=c('CD', 'LS'),
+                                           labels=c('Cancers detected',
                                                     'Lives saved')))
     gg_theme(panel.grid.major.x=element_line(colour='darkgray'),
              axis.ticks.x=element_line(colour='black'))
@@ -235,15 +226,6 @@ k_cancer_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
                         size=1.75,
                         alpha=0.8,
                         shape=21)
-    gg <- gg+geom_segment(data=dset,
-                          aes(x=Minimum.UCT,
-                              xend=Maximum.UCT,
-                              y=site,
-                              yend=site),
-                          colour='#482576FF',
-                          size=2,
-                          alpha=0.4,
-                          show.legend=FALSE)
     gg <- gg+facet_grid(.~age)
     gg <- gg+scale_x_continuous(name='',
                                 limits=c(0, 20),
@@ -252,14 +234,63 @@ k_cancer_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
     gg <- gg+geom_hline(yintercept=seq(1.5, nlevels(dset$site)-0.5),
                         colour='darkgray')
     gg <- gg+scale_fill_manual(name='Expected outcomes\nper 1,000 persons',
-                           values=c('Lives saved'='#BBDF27FF',
-                                    'Cancers detected'='#21908CFF',
-                                    'Minimum UCTs (log scale)'='#482576FF',
-                                    'Maximum UCTs (log scale)'='#482576FF'),
+                           values=c('Cancers detected'='#BBDF27FF',
+                                    'Lives saved'='#482576FF'),
                                 guide=guide_legend(title.hjust=0.5))
     print(gg)
     if(saveit){
-        filename <- str_glue('multi_{tolower(Sex)}_{tolower(Race)}_{datestamp}')
+        filename <- str_glue('mced_absolute_{tolower(Sex)}_{tolower(Race)}_{datestamp}')
+        filename <- paste(filename, ext, sep='.')
+        ggsave(here('plots', filename),
+               plot=gg,
+               width=12,
+               height=10)
+    }
+}
+
+##################################################
+# Visualize relative MCED outcomes
+##################################################
+relative_mced_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
+    dset <- dset %>% filter(sex == Sex, race == Race)
+    dset <- dset %>% mutate(UCT.CD=UCT/CD, UCT.LS=UCT/LS)
+    dset <- dset %>% arrange(desc(age), UCT.CD)
+    dset <- dset %>% mutate(age=factor(sub('-[567]4', ' y', age)),
+                            site=factor(site, levels=rev(unique(site))))
+    dset <- dset %>% select(-sex, -race, -UCT, -CD, -LS)
+    lset <- dset %>% pivot_longer(-c(age, site),
+                                  names_to='outcome',
+                                  values_to='value')
+    lset <- lset %>% mutate(outcome=factor(outcome,
+                                           levels=c('UCT.CD',
+                                                    'UCT.LS'),
+                                           labels=c('UCT/CD',
+                                                    'UCT/LS')))
+    gg_theme(panel.grid.major.x=element_line(colour='darkgray'),
+             panel.spacing=unit(0.02, 'npc'),
+             axis.ticks.x=element_line(colour='black'))
+    gg <- ggplot(data=lset)
+    gg <- gg+geom_point(aes(x=value,
+                            y=site,
+                            fill=outcome),
+                        size=1.75,
+                        alpha=0.8,
+                        shape=21)
+    gg <- gg+facet_grid(.~age)
+    gg <- gg+scale_x_log10(name='',
+                           limits=c(1, 1e6),
+                           breaks=c(1, 100, 10000, 1000000),
+                           labels=c(1, 100, 10000, '1000000'))
+    gg <- gg+scale_y_discrete(name='')
+    gg <- gg+geom_hline(yintercept=seq(1.5, nlevels(dset$site)-0.5),
+                        colour='darkgray')
+    gg <- gg+scale_fill_manual(name='Expected outcomes\nper 1,000 persons',
+                               values=c('UCT/CD'='#3B528BFF',
+                                        'UCT/LS'='#5DC863FF'),
+                               guide=guide_legend(title.hjust=0.5))
+    print(gg)
+    if(saveit){
+        filename <- str_glue('mced_relative_{tolower(Sex)}_{tolower(Race)}_{datestamp}')
         filename <- paste(filename, ext, sep='.')
         ggsave(here('plots', filename),
                plot=gg,
@@ -298,8 +329,8 @@ k_cancer_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
 ##################################################
 # Visualize single-cancer test harms and benefits
 ##################################################
-single_cancer_plot(sset, 'All', saveit=TRUE)
-single_cancer_plot(sset, 'Black', saveit=TRUE)
+#single_cancer_plot(sset, 'All', saveit=TRUE)
+#single_cancer_plot(sset, 'Black', saveit=TRUE)
 
 ##################################################
 # MCED test harms and benefits
@@ -308,10 +339,18 @@ single_cancer_plot(sset, 'Black', saveit=TRUE)
 #mset <- mset %>% ungroup()
 
 ##################################################
-# Visualize MCED test harms and benefits
+# Visualize absolute MCED test harms and benefits
 ##################################################
-k_cancer_plot(mset, 'Female', 'All', saveit=TRUE)
-k_cancer_plot(mset, 'Male', 'All', saveit=TRUE)
-#k_cancer_plot(mset, 'Female', 'Black', saveit=TRUE)
-#k_cancer_plot(mset, 'Male', 'Black', saveit=TRUE)
+#absolute_mced_plot(mset, 'Female', 'All', saveit=TRUE)
+#absolute_mced_plot(mset, 'Male', 'All', saveit=TRUE)
+#absolute_mced_plot(mset, 'Female', 'Black', saveit=TRUE)
+#absolute_mced_plot(mset, 'Male', 'Black', saveit=TRUE)
+
+##################################################
+# Visualize relative MCED test harms and benefits
+##################################################
+#relative_mced_plot(mset, 'Female', 'All', saveit=TRUE)
+#relative_mced_plot(mset, 'Male', 'All', saveit=TRUE)
+#relative_mced_plot(mset, 'Female', 'Black', saveit=TRUE)
+#relative_mced_plot(mset, 'Male', 'Black', saveit=TRUE)
 
