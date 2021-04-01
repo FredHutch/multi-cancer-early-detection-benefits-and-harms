@@ -26,7 +26,7 @@ datestamp <- '2021-03-31'
 # m                         mortality (of A)
 # r                         mortality reduction (of A)
 ##################################################
-k_cancer_test <- function(dset, specificity=0.99, size=1000){
+k_cancer_test <- function(dset, specificity=0.99, size=100000){
     # group results by cancer site
     gset <- dset %>% group_by(site)
     # expected unnecessary confirmation tests
@@ -202,44 +202,51 @@ single_cancer_plot <- function(dset, Race, ext='png', saveit=FALSE){
 ##################################################
 # Visualize absolute MCED outcomes
 ##################################################
-absolute_mced_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
-    dset <- dset %>% filter(sex == Sex, race == Race)
-    dset <- dset %>% arrange(desc(age), desc(CD))
+absolute_mced_plot <- function(dset, Sex, Outcome, ext='png', saveit=FALSE){
+    dset <- dset %>% filter(sex == Sex)
+    dset <- dset %>% arrange(race, desc(age), desc(!!sym(Outcome)))
     dset <- dset %>% mutate(age=factor(sub('-[567]4', ' y', age)),
                             site=factor(site, levels=rev(unique(site))))
-    dset <- dset %>% group_by(age)
-    dset <- dset %>% mutate(CD=cumsum(CD), LS=cumsum(LS))
-    dset <- dset %>% select(-sex, -race, -UCT)
-    lset <- dset %>% pivot_longer(-c(age, site),
-                                  names_to='outcome',
-                                  values_to='value')
-    lset <- lset %>% mutate(outcome=factor(outcome,
-                                           levels=c('CD', 'LS'),
-                                           labels=c('Cancers detected',
-                                                    'Lives saved')))
+    dset <- dset %>% group_by(race, age)
+    dset <- dset %>% mutate(CD=cumsum(CD),
+                            LS=cumsum(LS),
+                            race=factor(race,
+                                        levels=c('All', 'Black'),
+                                        labels=c('All races', 'African Americans')))
+    dset <- dset %>% select(-sex, -setdiff(c('UCT', 'CD', 'LS'), Outcome))
+    if(Sex == 'Female'){
+        ymin <- switch(Outcome,  UCT=1000, CD=0, LS=0)
+        ymax <- switch(Outcome,  UCT=1050, CD=1000, LS=60)
+        ystep <- switch(Outcome,  UCT=20, CD=200, LS=20)
+    } else {
+        ymin <- switch(Outcome,  UCT=1000, CD=0, LS=0)
+        ymax <- switch(Outcome,  UCT=1100, CD=2200, LS=120)
+        ystep <- switch(Outcome,  UCT=20, CD=500, LS=20)
+    }
     gg_theme(panel.grid.major.x=element_line(colour='darkgray'),
+             panel.spacing=unit(0.02, 'npc'),
              axis.ticks.x=element_line(colour='black'))
-    gg <- ggplot(data=lset)
-    gg <- gg+geom_point(aes(x=value,
-                            y=site,
-                            fill=outcome),
+    gg <- ggplot(data=dset)
+    gg <- gg+geom_point(aes_string(x=Outcome,
+                                   y='site',
+                                   fill='race'),
                         size=1.75,
                         alpha=0.8,
                         shape=21)
     gg <- gg+facet_grid(.~age)
     gg <- gg+scale_x_continuous(name='',
-                                limits=c(0, 20),
-                                breaks=seq(0, 20, by=2))
+                                limits=c(ymin, ymax),
+                                breaks=seq(ymin, ymax, by=ystep))
     gg <- gg+scale_y_discrete(name='')
     gg <- gg+geom_hline(yintercept=seq(1.5, nlevels(dset$site)-0.5),
                         colour='darkgray')
-    gg <- gg+scale_fill_manual(name='Expected outcomes\nper 1,000 persons',
-                           values=c('Cancers detected'='#BBDF27FF',
-                                    'Lives saved'='#482576FF'),
-                                guide=guide_legend(title.hjust=0.5))
+    gg <- gg+scale_fill_manual(name='Expected outcomes\nper 100,000 persons',
+                               values=c('All races'='#482576FF',
+                                        'African Americans'='#BBDF27FF'),
+                               guide=guide_legend(title.hjust=0.5))
     print(gg)
     if(saveit){
-        filename <- str_glue('mced_absolute_{tolower(Sex)}_{tolower(Race)}_{datestamp}')
+        filename <- str_glue('mced_absolute_{tolower(Sex)}_{tolower(Outcome)}_{datestamp}')
         filename <- paste(filename, ext, sep='.')
         ggsave(here('plots', filename),
                plot=gg,
@@ -251,46 +258,50 @@ absolute_mced_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
 ##################################################
 # Visualize relative MCED outcomes
 ##################################################
-relative_mced_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
-    dset <- dset %>% filter(sex == Sex, race == Race)
-    dset <- dset %>% mutate(UCT.CD=UCT/CD, UCT.LS=UCT/LS)
-    dset <- dset %>% arrange(desc(age), UCT.CD)
+relative_mced_plot <- function(dset, Sex, Outcome, ext='png', saveit=FALSE){
+    dset <- dset %>% filter(sex == Sex)
+    dset <- dset %>% arrange(race, desc(age), desc(!!sym(Outcome)))
+    dset <- dset %>% mutate(!!sym(Outcome):=cumsum(!!sym(Outcome)),
+                            Outcome=UCT/!!sym(Outcome),
+                            race=factor(race,
+                                        levels=c('All', 'Black'),
+                                        labels=c('All races', 'African Americans')))
     dset <- dset %>% mutate(age=factor(sub('-[567]4', ' y', age)),
                             site=factor(site, levels=rev(unique(site))))
-    dset <- dset %>% select(-sex, -race, -UCT, -CD, -LS)
-    lset <- dset %>% pivot_longer(-c(age, site),
-                                  names_to='outcome',
-                                  values_to='value')
-    lset <- lset %>% mutate(outcome=factor(outcome,
-                                           levels=c('UCT.CD',
-                                                    'UCT.LS'),
-                                           labels=c('UCT/CD',
-                                                    'UCT/LS')))
+    dset <- dset %>% select(-sex, -UCT, -CD, -LS)
+    if(Sex == 'Female'){
+        ymin <- switch(Outcome,  CD=0, LS=0)
+        ymax <- switch(Outcome,  CD=4, LS=80)
+        ystep <- switch(Outcome,  CD=1, LS=20)
+    } else {
+        ymin <- switch(Outcome,  CD=0, LS=0)
+        ymax <- switch(Outcome,  CD=2, LS=40)
+        ystep <- switch(Outcome,  CD=0.5, LS=10)
+    }
     gg_theme(panel.grid.major.x=element_line(colour='darkgray'),
              panel.spacing=unit(0.02, 'npc'),
              axis.ticks.x=element_line(colour='black'))
-    gg <- ggplot(data=lset)
-    gg <- gg+geom_point(aes(x=value,
+    gg <- ggplot(data=dset)
+    gg <- gg+geom_point(aes(x=Outcome,
                             y=site,
-                            fill=outcome),
+                            fill=race),
                         size=1.75,
                         alpha=0.8,
                         shape=21)
     gg <- gg+facet_grid(.~age)
-    gg <- gg+scale_x_log10(name='',
-                           limits=c(1, 1e6),
-                           breaks=c(1, 100, 10000, 1000000),
-                           labels=c(1, 100, 10000, '1000000'))
+    gg <- gg+scale_x_continuous(name='',
+                                limits=c(ymin, ymax),
+                                breaks=seq(ymin, ymax, by=ystep))
     gg <- gg+scale_y_discrete(name='')
     gg <- gg+geom_hline(yintercept=seq(1.5, nlevels(dset$site)-0.5),
                         colour='darkgray')
-    gg <- gg+scale_fill_manual(name='Expected outcomes\nper 1,000 persons',
-                               values=c('UCT/CD'='#3B528BFF',
-                                        'UCT/LS'='#5DC863FF'),
+    gg <- gg+scale_fill_manual(name='Expected outcomes\nper 100,000 persons',
+                               values=c('All races'='#482576FF',
+                                        'African Americans'='#BBDF27FF'),
                                guide=guide_legend(title.hjust=0.5))
     print(gg)
     if(saveit){
-        filename <- str_glue('mced_relative_{tolower(Sex)}_{tolower(Race)}_{datestamp}')
+        filename <- str_glue('mced_relative_{tolower(Sex)}_{tolower(Outcome)}_{datestamp}')
         filename <- paste(filename, ext, sep='.')
         ggsave(here('plots', filename),
                plot=gg,
@@ -341,16 +352,19 @@ relative_mced_plot <- function(dset, Sex, Race, ext='png', saveit=FALSE){
 ##################################################
 # Visualize absolute MCED test harms and benefits
 ##################################################
-#absolute_mced_plot(mset, 'Female', 'All', saveit=TRUE)
-#absolute_mced_plot(mset, 'Male', 'All', saveit=TRUE)
-#absolute_mced_plot(mset, 'Female', 'Black', saveit=TRUE)
-#absolute_mced_plot(mset, 'Male', 'Black', saveit=TRUE)
+#absolute_mced_plot(mset, 'Female', 'UCT', saveit=TRUE)
+#absolute_mced_plot(mset, 'Female', 'CD', saveit=TRUE)
+#absolute_mced_plot(mset, 'Female', 'LS', saveit=TRUE)
+
+#absolute_mced_plot(mset, 'Male', 'UCT', saveit=TRUE)
+#absolute_mced_plot(mset, 'Male', 'CD', saveit=TRUE)
+#absolute_mced_plot(mset, 'Male', 'LS', saveit=TRUE)
 
 ##################################################
 # Visualize relative MCED test harms and benefits
 ##################################################
-#relative_mced_plot(mset, 'Female', 'All', saveit=TRUE)
-#relative_mced_plot(mset, 'Male', 'All', saveit=TRUE)
-#relative_mced_plot(mset, 'Female', 'Black', saveit=TRUE)
-#relative_mced_plot(mset, 'Male', 'Black', saveit=TRUE)
+#relative_mced_plot(mset, 'Female', 'CD', saveit=TRUE)
+#relative_mced_plot(mset, 'Female', 'LS', saveit=TRUE)
 
+#relative_mced_plot(mset, 'Male', 'CD', saveit=TRUE)
+#relative_mced_plot(mset, 'Male', 'LS', saveit=TRUE)
