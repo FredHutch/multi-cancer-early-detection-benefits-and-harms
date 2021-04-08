@@ -12,7 +12,8 @@ library(viridis)
 
 #datestamp <- '2021-03-26'
 #datestamp <- '2021-03-30'
-datestamp <- '2021-03-31'
+#datestamp <- '2021-03-31'
+datestamp <- '2021-04-05'
 
 ##################################################
 # Project outcomes for k-cancer test
@@ -107,7 +108,6 @@ seer_heatmap <- function(dset,
                          saveit=FALSE){
     dset <- dset %>% filter(race == Race)
     dset <- dset %>% mutate(age=factor(age),
-                            #age=factor(sub('-[567]4', ' y', age)),
                             site=factor(site, levels=rev(sort(unique(site)))),
                             prevalence=ifelse(prevalence == 0,
                                               smidgen,
@@ -140,6 +140,61 @@ seer_heatmap <- function(dset,
     gg <- gg+scale_y_discrete(name='', expand=c(0, 0))
     if(saveit){
         filename <- str_glue('heatmap_{tolower(Race)}_{datestamp}')
+        filename <- paste(filename, ext, sep='.')
+        ggsave(here('plots', filename),
+               plot=gg,
+               height=9,
+               width=10)
+    }
+    return(gg)
+}
+
+##################################################
+# Visualize dotplot of SEER data by race
+##################################################
+seer_dotplot <- function(dset,
+                         Sex,
+                         Outcome,
+                         radix=1e5,
+                         smidgen=0.1,
+                         ext='png',
+                         saveit=FALSE){
+    dset <- dset %>% filter(sex == Sex)
+    dset <- dset %>% arrange(race, desc(age), !!sym(Outcome))
+    dset <- dset %>% mutate(age=factor(age),
+                            site=factor(site, levels=unique(site)),
+                            race=factor(race,
+                                        levels=c('All', 'Black'),
+                                        labels=c('All races', 'African Americans')),
+                            !!sym(Outcome):=radix*!!sym(Outcome))
+    dset <- dset %>% select(-sex, -sensitivity, -localization, -effect)
+    sex <- switch(Sex, Female='women', Male='men')
+    outcome <- switch(Outcome, prevalence='incidence', mortality='mortality')
+    label <- switch(Outcome,
+                    prevalence=paste('Incidence rate\nper 100,000', sex),
+                    mortality=paste('15-year IBM rate\nper 100,000', sex))
+    gg_theme(panel.grid.major.x=element_line(colour='darkgray'),
+             panel.spacing=unit(0.02, 'npc'),
+             axis.ticks.x=element_line(colour='black'))
+    gg <- ggplot(dset)
+    gg <- gg+geom_point(aes_string(x=Outcome,
+                                   y='site',
+                                   fill='race'),
+                        size=1.75,
+                        alpha=0.8,
+                        shape=21)
+    gg <- gg+facet_grid(.~age)
+    gg <- gg+geom_hline(yintercept=seq(1.5, nlevels(dset$site)-0.5),
+                        colour='darkgray')
+    gg <- gg+scale_fill_manual(name=label,
+                               values=c('All races'='#482576FF',
+                                        'African Americans'='#BBDF27FF'),
+                               guide=guide_legend(title.hjust=0.5))
+    gg <- gg+scale_x_continuous(name='')
+    gg <- gg+scale_y_discrete(name='')
+    print(gg)
+    if(saveit){
+        filename <- str_glue('seer_{tolower(Sex)}_{outcome}_{datestamp}')
         filename <- paste(filename, ext, sep='.')
         ggsave(here('plots', filename),
                plot=gg,
@@ -200,7 +255,7 @@ single_cancer_plot <- function(dset, Race, ext='png', saveit=FALSE){
 }
 
 ##################################################
-# Visualize absolute MCED outcomes
+# Visualize absolute MCED outcomes by race
 ##################################################
 absolute_mced_plot <- function(dset, Sex, Outcome, ext='png', saveit=FALSE){
     dset <- dset %>% filter(sex == Sex)
@@ -215,14 +270,19 @@ absolute_mced_plot <- function(dset, Sex, Outcome, ext='png', saveit=FALSE){
                                         labels=c('All races', 'African Americans')))
     dset <- dset %>% select(-sex, -setdiff(c('UCT', 'CD', 'LS'), Outcome))
     if(Sex == 'Female'){
-        ymin <- switch(Outcome,  UCT=1000, CD=0, LS=0)
-        ymax <- switch(Outcome,  UCT=1050, CD=1000, LS=60)
-        ystep <- switch(Outcome,  UCT=20, CD=200, LS=20)
+        xmin <- switch(Outcome,  UCT=1000, CD=0, LS=0)
+        xmax <- switch(Outcome,  UCT=1050, CD=1000, LS=60)
+        xstep <- switch(Outcome,  UCT=20, CD=200, LS=20)
     } else {
-        ymin <- switch(Outcome,  UCT=1000, CD=0, LS=0)
-        ymax <- switch(Outcome,  UCT=1100, CD=2200, LS=120)
-        ystep <- switch(Outcome,  UCT=20, CD=500, LS=20)
+        xmin <- switch(Outcome,  UCT=1000, CD=0, LS=0)
+        xmax <- switch(Outcome,  UCT=1100, CD=2200, LS=120)
+        xstep <- switch(Outcome,  UCT=20, CD=500, LS=20)
     }
+    sex <- switch(Sex, Female='women', Male='men')
+    label <- switch(Outcome,
+                    UCT=paste('Unnecessary tests\nper 100,000', sex),
+                    CD=paste('Cancers detected\nper 100,000', sex),
+                    LS=paste('Lives saved\nper 100,000', sex))
     gg_theme(panel.grid.major.x=element_line(colour='darkgray'),
              panel.spacing=unit(0.02, 'npc'),
              axis.ticks.x=element_line(colour='black'))
@@ -235,12 +295,12 @@ absolute_mced_plot <- function(dset, Sex, Outcome, ext='png', saveit=FALSE){
                         shape=21)
     gg <- gg+facet_grid(.~age)
     gg <- gg+scale_x_continuous(name='',
-                                limits=c(ymin, ymax),
-                                breaks=seq(ymin, ymax, by=ystep))
+                                limits=c(xmin, xmax),
+                                breaks=seq(xmin, xmax, by=xstep))
     gg <- gg+scale_y_discrete(name='')
     gg <- gg+geom_hline(yintercept=seq(1.5, nlevels(dset$site)-0.5),
                         colour='darkgray')
-    gg <- gg+scale_fill_manual(name='Expected outcomes\nper 100,000 persons',
+    gg <- gg+scale_fill_manual(name=label,
                                values=c('All races'='#482576FF',
                                         'African Americans'='#BBDF27FF'),
                                guide=guide_legend(title.hjust=0.5))
@@ -256,7 +316,7 @@ absolute_mced_plot <- function(dset, Sex, Outcome, ext='png', saveit=FALSE){
 }
 
 ##################################################
-# Visualize relative MCED outcomes
+# Visualize relative MCED outcomes by race
 ##################################################
 relative_mced_plot <- function(dset, Sex, Outcome, ext='png', saveit=FALSE){
     dset <- dset %>% filter(sex == Sex)
@@ -270,14 +330,19 @@ relative_mced_plot <- function(dset, Sex, Outcome, ext='png', saveit=FALSE){
                             site=factor(site, levels=rev(unique(site))))
     dset <- dset %>% select(-sex, -UCT, -CD, -LS)
     if(Sex == 'Female'){
-        ymin <- switch(Outcome,  CD=0, LS=0)
-        ymax <- switch(Outcome,  CD=4, LS=80)
-        ystep <- switch(Outcome,  CD=1, LS=20)
+        xmin <- switch(Outcome,  CD=0, LS=0)
+        xmax <- switch(Outcome,  CD=4, LS=80)
+        xstep <- switch(Outcome,  CD=1, LS=20)
     } else {
-        ymin <- switch(Outcome,  CD=0, LS=0)
-        ymax <- switch(Outcome,  CD=2, LS=40)
-        ystep <- switch(Outcome,  CD=0.5, LS=10)
+        xmin <- switch(Outcome,  CD=0, LS=0)
+        xmax <- switch(Outcome,  CD=2, LS=40)
+        xstep <- switch(Outcome,  CD=0.5, LS=10)
     }
+    sex <- switch(Sex, Female='women', Male='men')
+    label <- switch(Outcome,
+                    UCT=paste('Unnecessary tests\nper 100,000', sex),
+                    CD=paste('Cancers detected\nper 100,000', sex),
+                    LS=paste('Lives saved\nper 100,000', sex))
     gg_theme(panel.grid.major.x=element_line(colour='darkgray'),
              panel.spacing=unit(0.02, 'npc'),
              axis.ticks.x=element_line(colour='black'))
@@ -290,12 +355,12 @@ relative_mced_plot <- function(dset, Sex, Outcome, ext='png', saveit=FALSE){
                         shape=21)
     gg <- gg+facet_grid(.~age)
     gg <- gg+scale_x_continuous(name='',
-                                limits=c(ymin, ymax),
-                                breaks=seq(ymin, ymax, by=ystep))
+                                limits=c(xmin, xmax),
+                                breaks=seq(xmin, xmax, by=xstep))
     gg <- gg+scale_y_discrete(name='')
     gg <- gg+geom_hline(yintercept=seq(1.5, nlevels(dset$site)-0.5),
                         colour='darkgray')
-    gg <- gg+scale_fill_manual(name='Expected outcomes\nper 100,000 persons',
+    gg <- gg+scale_fill_manual(name=label,
                                values=c('All races'='#482576FF',
                                         'African Americans'='#BBDF27FF'),
                                guide=guide_legend(title.hjust=0.5))
@@ -320,6 +385,15 @@ relative_mced_plot <- function(dset, Sex, Outcome, ext='png', saveit=FALSE){
 ##################################################
 #seer_heatmap(dset, 'All', saveit=TRUE)
 #seer_heatmap(dset, 'Black', saveit=TRUE)
+
+##################################################
+# Visualize dotplot of SEER data by race
+##################################################
+#seer_dotplot(dset, 'Female', 'prevalence', saveit=TRUE)
+#seer_dotplot(dset, 'Male', 'prevalence', saveit=TRUE)
+
+#seer_dotplot(dset, 'Female', 'mortality', saveit=TRUE)
+#seer_dotplot(dset, 'Male', 'mortality', saveit=TRUE)
 
 ##################################################
 # Specify default sensitivity, localization probability
