@@ -15,7 +15,8 @@ library(viridis)
 #datestamp <- '2021-03-12'
 #datestamp <- '2021-03-13'
 #datestamp <- '2021-03-16'
-datestamp <- '2021-03-17'
+#datestamp <- '2021-03-17'
+datestamp <- '2021-05-10'
 
 ##################################################
 # Project outcomes for k-cancer test
@@ -244,14 +245,15 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
     if(any(grepl('_low$', names(dset)))){
         dset <- dset %>% mutate(UCT.CD=UCT/CD,
                                 UCT.LS_low=UCT/LS_low,
+                                UCT.LS_mid=UCT/LS_mid,
                                 UCT.LS_high=UCT/LS_high)
-        dset <- dset %>% select(-UCT, -CD, -LS_low, -LS_high)
-        dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS_low, UCT.LS_high),
+        dset <- dset %>% select(-UCT, -CD, -LS_low, -LS_mid, -LS_high)
+        dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS_low, UCT.LS_mid, UCT.LS_high),
                                       names_to='outcome',
                                       values_to='value')
         dset <- dset %>% separate(outcome, c('outcome', 'assumption'), sep='_', fill='right')
         dset <- dset %>% mutate(assumption=ifelse(is.na(assumption), 'point', assumption),
-                                assumption=factor(assumption, levels=c('point', 'high', 'low')))
+                                assumption=factor(assumption, levels=c('point', 'high', 'mid', 'low')))
     } else {
         dset <- dset %>% mutate(UCT.CD=UCT/CD, UCT.LS=UCT/LS)
         dset <- dset %>% select(-UCT, -CD, -LS)
@@ -273,7 +275,7 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
     } else {
         height <- 6
     }
-    ymax <- switch(as.character(figureno), '2'=300, '3'=200, 'S1'=150, 'S2'=80)
+    ymax <- switch(as.character(figureno), '2'=200, '3'=150, 'S1'=150, 'S2'=100)
     gg_theme(legend.position='none',
              axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
              axis.ticks.x=element_blank(),
@@ -294,6 +296,7 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
     gg <- gg+scale_y_continuous(name='', expand=c(0, 0))
     gg <- gg+scale_fill_manual(name='', values=c(point='gray40',
                                                  high='gray40',
+                                                 mid='gray60',
                                                  low='gray80'))
     print(gg)
     if(saveit){
@@ -359,7 +362,7 @@ format_empirical <- function(dset, saveit=FALSE){
 # Format table for sensitivity analyses
 ##################################################
 format_supplemental <- function(dset, tableno, saveit=FALSE){
-    dset <- dset %>% select(age, site, UCT, CD, LS_low, LS_high)
+    dset <- dset %>% select(age, site, UCT, CD, LS_low, LS_mid, LS_high)
     dset <- dset %>% mutate(age=sub('-[567]4', '', age),
                             site=factor(site, levels=c('Lung',
                                                        'Colorectal',
@@ -369,6 +372,7 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
                             UCT=sprintf('%4.1f', UCT),
                             CD=sprintf('%3.1f', CD),
                             LS_low=sprintf('%3.1f', LS_low),
+                            LS_mid=sprintf('%3.1f', LS_mid),
                             LS_high=sprintf('%3.1f', LS_high))
     dset <- dset %>% arrange(age, site)
     dset <- dset %>% rename('Tissue of origin'='site',
@@ -376,6 +380,7 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
                             'Unnecessary confirmation tests, n'='UCT',
                             'Cancers detected, n'='CD',
                             'Lives saved (5%), n'='LS_low',
+                            'Lives saved (10%), n'='LS_mid',
                             'Lives saved (20%), n'='LS_high')
     if(saveit){
         filename <- str_glue('supplemental_table{tableno}_{datestamp}.csv')
@@ -403,7 +408,7 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 ##################################################
 # Table 3
 ##################################################
-#pset <- pset %>% mutate(effect=0.2)
+#pset <- pset %>% mutate(effect=0.1/(sensitivity*localization))
 #sset <- full_join(sset, pset, by='site')
 #iset6 <- age_analysis_incremental(sset, setdiff(pset$site, 'Breast'))
 #iset6 <- iset6 %>% mutate(Test='Pan-cancer')
@@ -426,18 +431,25 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 ##################################################
 # Figure 2
 ##################################################
-#lset <- sset %>% mutate(effect=0.05)
+#lset <- sset %>% mutate(effect=0.05/(sensitivity*localization))
+#hset <- sset %>% mutate(effect=0.2/(sensitivity*localization))
 #iset1l <- age_analysis_incremental(lset, 'Breast')
-#iset1h <- age_analysis_incremental(sset, 'Breast')
-#iset1 <- full_join(iset1l, iset1h, by=c('site', 'age', 'UCT', 'CD'), suffix=c('_low', '_high'))
+#iset1m <- age_analysis_incremental(sset, 'Breast')
+#iset1h <- age_analysis_incremental(hset, 'Breast')
+#iset1 <- full_join(iset1l, iset1m, by=c('site', 'age', 'UCT', 'CD'), suffix=c('_low', '_mid'))
+#iset1 <- full_join(iset1, iset1h, by=c('site', 'age', 'UCT', 'CD'))
+#iset1 <- iset1 %>% rename(LS_high=LS)
 #empirical_age_plot(iset1, figureno=2, ext='pdf', saveit=TRUE)
 
 ##################################################
 # Figure 3
 ##################################################
-#iset2l <- age_analysis_incremental(lset, c('Breast', 'Lung'))
-#iset2h <- age_analysis_incremental(sset, c('Breast', 'Lung'))
-#iset2 <- full_join(iset2l, iset2h, by=c('site', 'age', 'UCT', 'CD'), suffix=c('_low', '_high'))
+#set2l <- age_analysis_incremental(lset, c('Breast', 'Lung'))
+#iset2m <- age_analysis_incremental(sset, c('Breast', 'Lung'))
+#iset2h <- age_analysis_incremental(hset, c('Breast', 'Lung'))
+#iset2 <- full_join(iset2l, iset2m, by=c('site', 'age', 'UCT', 'CD'), suffix=c('_low', '_mid'))
+#iset2 <- full_join(iset2, iset2h, by=c('site', 'age', 'UCT', 'CD'))
+#iset2 <- iset2 %>% rename(LS_high=LS)
 #empirical_age_plot(iset2, figureno=3, ext='pdf', saveit=TRUE)
 
 ##################################################
