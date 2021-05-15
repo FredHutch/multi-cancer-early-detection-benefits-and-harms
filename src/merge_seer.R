@@ -42,9 +42,9 @@ read_data <- function(filename, interval=5, radix=1e5){
         # scale population by the length of the age interval
         dset <- dset %>% mutate(Population=Population/interval)
         # convert rate (lower, upper) to rates
-        dset <- dset %>% mutate(Diagnosis.Rate=Diagnosis.Rate/Population*radix,
-                                Diagnosis.Lower=Diagnosis.Lower/Population*radix,
-                                Diagnosis.Upper=Diagnosis.Upper/Population*radix)
+        dset <- dset %>% mutate(Diagnosis.Rate=Diagnosis.Rate/Population,
+                                Diagnosis.Lower=Diagnosis.Lower/Population,
+                                Diagnosis.Upper=Diagnosis.Upper/Population)
     } else {
         dset <- dset %>% rename(Death.Count=Count,
                                 Death.Rate=Rate,
@@ -66,9 +66,9 @@ control <- function(fset, interval=5, radix=1e5, saveit=FALSE){
     iset <- read_data(fset$incfile, interval=interval, radix=radix)
     mset <- read_data(fset$ibmfile, interval=interval, radix=radix)
     dset <- full_join(iset, mset, by=c('Age', 'Site'))
-    dset <- dset %>% mutate(Death.Rate=Death.Count/Population*radix,
-                            Death.Lower=Death.Lower/Population*radix,
-                            Death.Upper=Death.Upper/Population*radix)
+    dset <- dset %>% mutate(Death.Rate=Death.Count/Population,
+                            Death.Lower=Death.Lower/Population,
+                            Death.Upper=Death.Upper/Population)
     dset <- dset %>% select(Age,
                             Site,
                             Population,
