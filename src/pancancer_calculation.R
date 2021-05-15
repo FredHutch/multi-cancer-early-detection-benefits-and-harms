@@ -16,7 +16,8 @@ library(viridis)
 #datestamp <- '2021-03-13'
 #datestamp <- '2021-03-16'
 #datestamp <- '2021-03-17'
-datestamp <- '2021-05-10'
+#datestamp <- '2021-05-10'
+datestamp <- '2021-05-13'
 
 ##################################################
 # Project outcomes for k-cancer test
@@ -135,11 +136,11 @@ age_analysis <- function(bset, aset, specificity=0.99){
 ##################################################
 # Age-specific incremental impact of candidate cancer
 ##################################################
-age_analysis_incremental <- function(dset, existing){
+age_analysis_incremental <- function(dset, existing, specificity=0.99){
     aset <- dset %>% filter(site %in% existing)
     bset <- dset %>% filter(!site %in% existing)
     bset <- bset %>% group_by(site)
-    rset <- bset %>% do(age_analysis(., aset))
+    rset <- bset %>% do(age_analysis(., aset, specificity=specificity))
     rset <- rset %>% ungroup()
 }
 
@@ -275,7 +276,7 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
     } else {
         height <- 6
     }
-    ymax <- switch(as.character(figureno), '2'=200, '3'=150, 'S1'=150, 'S2'=100)
+    ymax <- switch(as.character(figureno), '2'=200, '3'=150, 'S1'=300, 'S2'=150, 'S3'=100)
     gg_theme(legend.position='none',
              axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
              axis.ticks.x=element_blank(),
@@ -455,16 +456,22 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
 ##################################################
 # Supplemental Figure 1
 ##################################################
-#sset1s <- sset %>% mutate(effect=ifelse(site %in% c('Breast', 'Colorectal', 'Lung'), 0.1, 0.5))
-#iset1s <- age_analysis_incremental(sset1s, 'Breast')
-#empirical_age_plot(iset1s, figureno='S1', sensitivity=TRUE, saveit=TRUE)
+#isetsp <- age_analysis_incremental(sset, 'Breast', specificity=0.97)
+#empirical_age_plot(isetsp, figureno='S1', sensitivity=TRUE, saveit=TRUE)
 
 ##################################################
 # Supplemental Figure 2
 ##################################################
+#sset1s <- sset %>% mutate(effect=ifelse(site %in% c('Breast', 'Colorectal', 'Lung'), 0.1, 0.5))
+#iset1s <- age_analysis_incremental(sset1s, 'Breast')
+#empirical_age_plot(iset1s, figureno='S2', sensitivity=TRUE, saveit=TRUE)
+
+##################################################
+# Supplemental Figure 3
+##################################################
 #sset10 <- read_data('seer_merged_2000-2002_followup=10_2021-03-03.csv')
 #iset10 <- age_analysis_incremental(sset, 'Breast')
-#empirical_age_plot(iset10, figureno='S2', sensitivity=TRUE, saveit=TRUE)
+#empirical_age_plot(iset10, figureno='S3', sensitivity=TRUE, saveit=TRUE)
 
 ##################################################
 # Supplemental Table 1
