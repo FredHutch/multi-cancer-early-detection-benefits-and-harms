@@ -8,7 +8,8 @@
 library(tidyverse)
 library(here)
 
-datestamp <- '2021-03-26'
+#datestamp <- '2021-03-26'
+datestamp <- '2021-05-13'
 
 ##################################################
 # Specify filenames for SEER data and target cancers
@@ -20,7 +21,7 @@ fset <- tibble(incfile='seer_incidence_2000-2002_group=5_extended.csv',
 ##################################################
 # Read and format SEER data
 ##################################################
-read_data <- function(filename, radix=1e5){
+read_data <- function(filename, interval=5, radix=1e5){
     dset <- read_csv(here('data', filename), col_types='ccccdddddd')
     dset <- dset %>% select(-'Standard Error')
     dset <- dset %>% rename(Sex='Sex (Male, Female)',
@@ -30,23 +31,31 @@ read_data <- function(filename, radix=1e5){
                             Rate='Crude Rate',
                             Lower='Lower Confidence Interval',
                             Upper='Upper Confidence Interval')
-    dset <- dset %>% mutate(Age=sub(' years$', '', Age),
-                            Rate=Rate/radix,
-                            Lower=Lower/radix,
-                            Upper=Upper/radix)
+    dset <- dset %>% mutate(Age=sub(' years$', '', Age))
     if(grepl('incidence', filename)){
         dset <- dset %>% rename(Diagnosis.Count=Count,
                                 Diagnosis.Rate=Rate,
                                 Diagnosis.Lower=Lower,
                                 Diagnosis.Upper=Upper)
+        # convert rate (lower, upper) to counts
+        dset <- dset %>% mutate(Diagnosis.Rate=Diagnosis.Rate*Population/radix,
+                                Diagnosis.Lower=Diagnosis.Lower*Population/radix,
+                                Diagnosis.Upper=Diagnosis.Upper*Population/radix)
+        # scale population by the length of the age interval
+        dset <- dset %>% mutate(Population=Population/interval)
+        # convert rate (lower, upper) to rates
+        dset <- dset %>% mutate(Diagnosis.Rate=Diagnosis.Rate/Population,
+                                Diagnosis.Lower=Diagnosis.Lower/Population,
+                                Diagnosis.Upper=Diagnosis.Upper/Population)
     } else {
         dset <- dset %>% rename(Death.Count=Count,
                                 Death.Rate=Rate,
                                 Death.Lower=Lower,
                                 Death.Upper=Upper)
-        dset <- dset %>% mutate(Death.Rate=Death.Rate*Population,
-                                Death.Lower=Death.Lower*Population,
-                                Death.Upper=Death.Upper*Population)
+        # convert rate (lower, upper) to counts
+        dset <- dset %>% mutate(Death.Rate=Death.Rate*Population/radix,
+                                Death.Lower=Death.Lower*Population/radix,
+                                Death.Upper=Death.Upper*Population/radix)
         dset <- dset %>% select(-Population)
     }
     return(dset)
@@ -61,9 +70,9 @@ read_cancers <- function(filename)
 ##################################################
 # Control analysis
 ##################################################
-control <- function(fset, saveit=FALSE){
-    iset <- read_data(fset$incfile)
-    mset <- read_data(fset$ibmfile)
+control <- function(fset, interval=5, radix=1e5, saveit=FALSE){
+    iset <- read_data(fset$incfile, interval=interval, radix=radix)
+    mset <- read_data(fset$ibmfile, interval=interval, radix=radix)
     dset <- full_join(iset, mset, by=c('Sex', 'Race', 'Age', 'Site'))
     dset <- dset %>% mutate(Death.Rate=Death.Count/Population,
                             Death.Lower=Death.Lower/Population,
