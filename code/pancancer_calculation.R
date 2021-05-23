@@ -12,6 +12,13 @@ library(viridis)
 datestamp <- '2021-05-15'
 
 ##################################################
+# Control paths
+##################################################
+basepath <- '..'
+datapath <- file.path(basepath, 'data')
+resupath <- file.path(basepath, 'results')
+
+##################################################
 # Project outcomes for k-cancer test
 #
 # Notation in paper         Variable name
@@ -89,7 +96,7 @@ hypothetical_test <- function(specificity){
 # Read merged SEER incidence and IBM data
 ##################################################
 read_data <- function(filename){
-    dset <- read_csv(file.path('..', 'data', filename), col_types='ccddddddddd')
+    dset <- read_csv(file.path(datapath, filename), col_types='ccddddddddd')
     dset <- dset %>% rename(age='Age', site='Site')
     dset <- dset %>% select(-Population,
                             -Diagnosis.Count,
@@ -188,7 +195,7 @@ hypothetical_uct_plot <- function(ext='svg', saveit=FALSE){
     if(saveit){
         filename <- paste('hypothetical_uct', datestamp, sep='_')
         filename <- paste(filename, ext, sep='.')
-        ggsave(file.path('results', filename),
+        ggsave(file.path(resupath, filename),
                plot=gg,
                width=6,
                height=6)
@@ -227,7 +234,7 @@ hypothetical_cd_plot <- function(ext='svg', saveit=FALSE){
     if(saveit){
         filename <- paste('hypothetical_cd', datestamp, sep='_')
         filename <- paste(filename, ext, sep='.')
-        ggsave(file.path('results', filename),
+        ggsave(file.path(resupath, filename),
                plot=gg,
                width=6,
                height=6)
@@ -299,7 +306,7 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
     if(saveit){
         filename <- str_glue('figure{figureno}_{datestamp}')
         filename <- paste(filename, ext, sep='.')
-        ggsave(file.path('results', filename),
+        ggsave(file.path(resupath, filename),
                plot=gg,
                width=8,
                height=height)
@@ -330,7 +337,7 @@ format_hypothetical <- function(dset, saveit=FALSE){
                             'Cancers detected, n'='CD')
     if(saveit){
         filename <- str_glue('supplemental_table1_{datestamp}.csv')
-        write_csv(dset, file.path('results', filename))
+        write_csv(dset, file.path(resupath, filename))
     }
 }
 
@@ -355,7 +362,7 @@ format_seer <- function(dset, fmt='%5.2f', saveit=FALSE){
                             '15-year probability of death, %'=mortality)
     if(saveit){
         filename <- str_glue('table1_{datestamp}.csv')
-        write_csv(dset, file.path('results', filename))
+        write_csv(dset, file.path(resupath, filename))
     }
 }
 
@@ -380,7 +387,7 @@ format_empirical <- function(dset, saveit=FALSE){
                             'UCT/LS'='UCT.LS')
     if(saveit){
         filename <- str_glue('table3_{datestamp}.csv')
-        write_csv(dset, file.path('results', filename))
+        write_csv(dset, file.path(resupath, filename))
     }
 }
 
@@ -410,7 +417,7 @@ format_supplemental <- function(dset, tableno, saveit=FALSE){
                             'Lives saved (20%), n'='LS_high')
     if(saveit){
         filename <- str_glue('supplemental_table{tableno}_{datestamp}.csv')
-        write_csv(dset, file.path('results', filename))
+        write_csv(dset, file.path(resupath, filename))
     }
 }
 
@@ -434,7 +441,7 @@ pset <- tribble(~site, ~sensitivity, ~localization,
                 'Ovary',      0.67, 0.96,
                 'Pancreas',   0.78, 0.79,
                 'Liver',      0.68, 0.72)
-pset <- pset %>% mutate(marginal=sensitivity*localization
+pset <- pset %>% mutate(marginal=sensitivity*localization,
                         effect=0.1/marginal)
 sset <- full_join(sset, pset, by='site')
 
