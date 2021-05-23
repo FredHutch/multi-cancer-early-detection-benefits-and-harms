@@ -90,7 +90,7 @@ hypothetical_test <- function(specificity){
 # Read merged SEER incidence and IBM data
 ##################################################
 read_data <- function(filename){
-    dset <- read_csv(here('results', filename), col_types='ccddddddddd')
+    dset <- read_csv(here('data', filename), col_types='ccddddddddd')
     dset <- dset %>% rename(age='Age', site='Site')
     dset <- dset %>% select(-Population,
                             -Diagnosis.Count,
