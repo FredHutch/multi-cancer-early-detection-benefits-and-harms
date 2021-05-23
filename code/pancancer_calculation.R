@@ -162,7 +162,7 @@ gg_theme <- function(...){
 ##################################################
 # Visualize UCTs in hypothetical analysis
 ##################################################
-hypothetical_uct_plot <- function(ext='svg', saveit=FALSE){
+hypothetical_uct_plot <- function(ext='png', saveit=FALSE){
     dset <- bind_rows(hypothetical_test(specificity=0.97),
                       hypothetical_test(specificity=0.98),
                       hypothetical_test(specificity=0.99),
@@ -205,7 +205,7 @@ hypothetical_uct_plot <- function(ext='svg', saveit=FALSE){
 ##################################################
 # Visualize CDs in hypothetical analysis
 ##################################################
-hypothetical_cd_plot <- function(ext='svg', saveit=FALSE){
+hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
     dset <- hypothetical_test(specificity=0.99)
     dset <- dset %>% ungroup()
     dset <- dset %>% filter(localization == 0.8)
