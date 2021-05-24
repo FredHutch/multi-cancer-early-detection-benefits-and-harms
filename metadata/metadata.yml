@@ -4,3 +4,13 @@ description: Code and data used to develop a quantitative framework to examine h
 tags:
 - R
 - cancer
+authors:
+- name: Roman Gulati
+  affiliations:
+  - name: Fred Hutchinson Cancer Research Center
+- name: Boshen Jiao
+  affiliations:
+  - name: University of Washington
+corresponding_contributor:
+  name: Roman Gulati
+  email: rgulati@fredhutch.org
