@@ -160,9 +160,9 @@ gg_theme <- function(...){
 }
 
 ##################################################
-# Visualize UCTs in hypothetical analysis
+# Visualize EUCs in hypothetical analysis
 ##################################################
-hypothetical_uct_plot <- function(ext='png', saveit=FALSE){
+hypothetical_euc_plot <- function(ext='png', saveit=FALSE){
     dset <- bind_rows(hypothetical_test(specificity=0.97),
                       hypothetical_test(specificity=0.98),
                       hypothetical_test(specificity=0.99),
@@ -193,7 +193,7 @@ hypothetical_uct_plot <- function(ext='png', saveit=FALSE){
                                        label.theme=element_text(size=12, angle=0)))
     print(gg)
     if(saveit){
-        filename <- paste('hypothetical_uct', datestamp, sep='_')
+        filename <- paste('hypothetical_euc', datestamp, sep='_')
         filename <- paste(filename, ext, sep='.')
         ggsave(file.path(resupath, filename),
                plot=gg,
@@ -246,12 +246,12 @@ hypothetical_cd_plot <- function(ext='png', saveit=FALSE){
 ##################################################
 empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, saveit=FALSE){
     if(any(grepl('_low$', names(dset)))){
-        dset <- dset %>% mutate(UCT.CD=EUC/CD,
-                                UCT.LS_low=EUC/LS_low,
-                                UCT.LS_mid=EUC/LS_mid,
-                                UCT.LS_high=EUC/LS_high)
+        dset <- dset %>% mutate(EUC.CD=EUC/CD,
+                                EUC.LS_low=EUC/LS_low,
+                                EUC.LS_mid=EUC/LS_mid,
+                                EUC.LS_high=EUC/LS_high)
         dset <- dset %>% select(-EUC, -CD, -LS_low, -LS_mid, -LS_high)
-        dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS_low, UCT.LS_mid, UCT.LS_high),
+        dset <- dset %>% pivot_longer(cols=c(EUC.CD, EUC.LS_low, EUC.LS_mid, EUC.LS_high),
                                       names_to='outcome',
                                       values_to='value')
         dset <- dset %>% separate(outcome, c('outcome', 'assumption'), sep='_', fill='right')
@@ -259,9 +259,9 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
                                 assumption=factor(assumption, levels=c('point', 'high', 'mid', 'low')))
         dset <- dset %>% arrange(desc(outcome), assumption, value)
     } else {
-        dset <- dset %>% mutate(UCT.CD=EUC/CD, UCT.LS=EUC/LS)
+        dset <- dset %>% mutate(EUC.CD=EUC/CD, EUC.LS=EUC/LS)
         dset <- dset %>% select(-EUC, -CD, -LS)
-        dset <- dset %>% pivot_longer(cols=c(UCT.CD, UCT.LS),
+        dset <- dset %>% pivot_longer(cols=c(EUC.CD, EUC.LS),
                                       names_to='outcome',
                                       values_to='value')
         dset <- dset %>% mutate(assumption='high')
@@ -269,7 +269,7 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
     }
     dset <- dset %>% mutate(age=sub('-[567]4', ' y', age),
                             outcome=factor(outcome,
-                                           levels=c('UCT.CD', 'UCT.LS'),
+                                           levels=c('EUC.CD', 'EUC.LS'),
                                            labels=c('Exposed to\nunnecessary\nconfirmation tests\nper cancer detected',
                                                     'Exposed to\nunnecessary\nconfirmation tests\nper life saved')),
                             site=factor(site, levels=unique(site)))
@@ -387,19 +387,19 @@ format_inputs <- function(dset, saveit=FALSE){
 format_empirical <- function(dset, saveit=FALSE){
     dset <- dset %>% select(Test, age, EUC, CD, LS)
     dset <- dset %>% mutate(age=sub('-[567]4', '', age),
-                            UCT.CD=EUC/CD,
-                            UCT.LS=EUC/LS)
+                            EUC.CD=EUC/CD,
+                            EUC.LS=EUC/LS)
     dset <- dset %>% mutate(EUC=sprintf('%4.1f', EUC),
                             CD=sprintf('%3.1f', CD),
                             LS=sprintf('%3.1f', LS),
-                            UCT.CD=sprintf('%3.1f', UCT.CD),
-                            UCT.LS=sprintf('%3.1f', UCT.LS))
+                            EUC.CD=sprintf('%3.1f', EUC.CD),
+                            EUC.LS=sprintf('%3.1f', EUC.LS))
     dset <- dset %>% rename('Screening age, y'='age',
                             'Exposed to unnecessary confirmation, n'='EUC',
                             'Cancers detected, n'='CD',
                             'Lives saved, n'='LS',
-                            'EUC/CD'='UCT.CD',
-                            'EUC/LS'='UCT.LS')
+                            'EUC/CD'='EUC.CD',
+                            'EUC/LS'='EUC.LS')
     if(saveit){
         filename <- str_glue('table3_{datestamp}.csv')
         write_csv(dset, file.path(resupath, filename))
@@ -479,7 +479,7 @@ format_empirical(cset, saveit=TRUE)
 ##################################################
 # Figure 1
 ##################################################
-hypothetical_uct_plot(saveit=TRUE)
+hypothetical_euc_plot(saveit=TRUE)
 hypothetical_cd_plot(saveit=TRUE)
 
 ##################################################
