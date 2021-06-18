@@ -62,11 +62,11 @@ k_cancer_test <- function(dset, specificity=0.99, size=1000){
 # 4. varying localization of both cancers=0.5 to 0.8
 # 5. varying specificity=0.95 to 0.99
 ##################################################
-hypothetical_test <- function(specificity){
+hypothetical_test <- function(specificity, localization.a=c(0.5, 0.8)){
     dset <- expand_grid(prevalence.a=0.005,
                         prevalence.b=c(0, 0.001, 0.005, 0.01, 0.02),
                         sensitivity.a=seq(0.5, 0.9, by=0.1),
-                        localization.a=c(0.5, 0.8),
+                        localization.a=localization.a,
                         mortality.a=0)
     dset <- dset %>% mutate(scenario=seq(nrow(dset)),
                             sensitivity=sensitivity.a,
@@ -162,22 +162,53 @@ gg_theme <- function(...){
 ##################################################
 # Visualize EUCs in hypothetical analysis
 ##################################################
-hypothetical_euc_plot <- function(ext='png', saveit=FALSE){
+hypothetical_euc_plot <- function(type, ext='png', saveit=FALSE){
     dset <- bind_rows(hypothetical_test(specificity=0.97),
                       hypothetical_test(specificity=0.98),
                       hypothetical_test(specificity=0.99),
                       hypothetical_test(specificity=1.0))
-    dset <- dset %>% filter(prevalence == 0.005,
-                            localization == 0.8)
-    dset <- dset %>% select(-prevalence, -localization, -CD, -LS)
-    dset <- dset %>% mutate(sensitivity=factor(sensitivity,
-                                               levels=unique(sensitivity),
-                                               labels=sprintf('%2.0f%%', 100*unique(sensitivity))))
+    if(type == 'sensitivity'){
+        dset <- dset %>% filter(prevalence == 0.005,
+                                localization == 0.8)
+        dset <- dset %>% select(-prevalence, -localization, -CD, -LS)
+        dset <- dset %>% mutate(sensitivity=factor(sensitivity,
+                                                   levels=unique(sensitivity),
+                                                   labels=sprintf('%2.0f%%', 100*unique(sensitivity))))
+        ltitle <- 'Sensitivity for\ncancers A and B'
+    }
+    if(type == 'prevalence'){
+        dset <- dset %>% filter(sensitivity == 0.7,
+                                prevalence != 0,
+                                localization == 0.8)
+        dset <- dset %>% select(-sensitivity, -localization, -CD, -LS)
+        dset <- dset %>% mutate(prevalence=factor(prevalence,
+                                                  levels=unique(prevalence),
+                                                  labels=sprintf('%3.1f%%', 100*unique(prevalence))))
+        ltitle <- 'Prevalence of\ncancer B'
+    }
+    if(type == 'localization'){
+        dset0.6 <- bind_rows(hypothetical_test(specificity=0.97, localization.a=0.6),
+                             hypothetical_test(specificity=0.98, localization.a=0.6),
+                             hypothetical_test(specificity=0.99, localization.a=0.6),
+                             hypothetical_test(specificity=1.0, localization.a=0.6))
+        dset0.7 <- bind_rows(hypothetical_test(specificity=0.97, localization.a=0.7),
+                             hypothetical_test(specificity=0.98, localization.a=0.7),
+                             hypothetical_test(specificity=0.99, localization.a=0.7),
+                             hypothetical_test(specificity=1.0, localization.a=0.7))
+        dset <- bind_rows(dset, dset0.6, dset0.7)
+        dset <- dset %>% filter(sensitivity == 0.7,
+                                prevalence == 0.005)
+        dset <- dset %>% select(-sensitivity, -prevalence, -CD, -LS)
+        dset <- dset %>% mutate(localization=factor(localization,
+                                                    levels=unique(sort(localization)),
+                                                    labels=sprintf('%2.0f%%', 100*unique(sort(localization)))))
+        ltitle <- 'Localization for\ncancers A and B'
+    }
     gg_theme()
     gg <- ggplot(data=dset)
-    gg <- gg+geom_line(aes(x=specificity,
-                           y=EUC,
-                           alpha=sensitivity),
+    gg <- gg+geom_line(aes_string(x='specificity',
+                                  y='EUC',
+                                  alpha=type),
                        size=0.6)
     gg <- gg+scale_x_continuous('\nSpecificity for cancers A and B',
                                 labels=percent_format(accuracy=1),
@@ -187,13 +218,13 @@ hypothetical_euc_plot <- function(ext='png', saveit=FALSE){
                                 limits=c(0, 35),
                                 breaks=seq(0, 35, by=5),
                                 expand=c(0, 0))
-    gg <- gg+guides(alpha=guide_legend(title='Sensitivity for\ncancers A and B',
+    gg <- gg+guides(alpha=guide_legend(title=ltitle,
                                        keywidth=unit(1, 'cm'),
                                        title.theme=element_text(size=12),
                                        label.theme=element_text(size=12, angle=0)))
     print(gg)
     if(saveit){
-        filename <- paste('hypothetical_euc', datestamp, sep='_')
+        filename <- paste('hypothetical_euc', type, datestamp, sep='_')
         filename <- paste(filename, ext, sep='.')
         ggsave(file.path(resupath, filename),
                plot=gg,
@@ -279,7 +310,7 @@ empirical_age_plot <- function(dset, figureno, ext='png', sensitivity=FALSE, sav
     } else {
         height <- 6
     }
-    ymax <- switch(as.character(figureno), '2'=80, '3'=50, 'S1'=100, 'S2'=30, 'S3'=40)
+    ymax <- switch(as.character(figureno), '2'=80, '3'=50, 'S2'=100, 'S3'=30, 'S4'=40)
     gg_theme(legend.position='none',
              axis.text.x=element_text(size=10, angle=90, vjust=0.5, hjust=1),
              axis.ticks.x=element_blank(),
@@ -479,7 +510,7 @@ format_empirical(cset, saveit=TRUE)
 ##################################################
 # Figure 1
 ##################################################
-hypothetical_euc_plot(saveit=TRUE)
+hypothetical_euc_plot(type='sensitivity', saveit=TRUE)
 hypothetical_cd_plot(saveit=TRUE)
 
 ##################################################
@@ -526,23 +557,29 @@ format_supplemental(fig3, tableno=3, saveit=TRUE)
 ##################################################
 # Supplemental Figure 1
 ##################################################
-figs1 <- age_analysis_incremental(sset, 'Breast', specificity=0.97)
-empirical_age_plot(figs1, figureno='S1', sensitivity=TRUE, saveit=TRUE)
+hypothetical_euc_plot(type='prevalence', saveit=TRUE)
+hypothetical_euc_plot(type='localization', saveit=TRUE)
 
 ##################################################
 # Supplemental Figure 2
 ##################################################
-ssets2 <- sset %>% mutate(effect=ifelse(site %in% c('Breast', 'Colorectal', 'Lung'),
-                                        0.1/marginal,
-                                        0.5/marginal))
-figs2 <- age_analysis_incremental(ssets2, 'Breast')
+figs2 <- age_analysis_incremental(sset, 'Breast', specificity=0.97)
 empirical_age_plot(figs2, figureno='S2', sensitivity=TRUE, saveit=TRUE)
 
 ##################################################
 # Supplemental Figure 3
 ##################################################
-ssets3 <- read_data('seer_merged_2000-2002_followup=10_2021-05-13.csv')
-ssets3 <- full_join(ssets3, pset, by='site')
+ssets3 <- sset %>% mutate(effect=ifelse(site %in% c('Breast', 'Colorectal', 'Lung'),
+                                        0.1/marginal,
+                                        0.5/marginal))
 figs3 <- age_analysis_incremental(ssets3, 'Breast')
 empirical_age_plot(figs3, figureno='S3', sensitivity=TRUE, saveit=TRUE)
+
+##################################################
+# Supplemental Figure 4
+##################################################
+ssets4 <- read_data('seer_merged_2000-2002_followup=10_2021-05-13.csv')
+ssets4 <- full_join(ssets4, pset, by='site')
+figs4 <- age_analysis_incremental(ssets4, 'Breast')
+empirical_age_plot(figs4, figureno='S4', sensitivity=TRUE, saveit=TRUE)
 
