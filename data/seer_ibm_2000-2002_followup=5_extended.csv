@@ -1,0 +1,685 @@
+"Sex (Male, Female)","Race recode (All, Black)","Age recode (50-54, 60-64, 70-74)","Site recode ICD-O-3/WHO 2008 (Liu et al groupings)","Crude Rate","Standard Error","Lower Confidence Interval","Upper Confidence Interval","Count","Population"
+"Male","All","50-54 years","Lip",0.0,0.0,0.0,0.0,17,265375710
+"Male","All","50-54 years","Tongue",0.1,0.0,0.1,0.1,245,265375710
+"Male","All","50-54 years","Salivary Gland",0.0,0.0,0.0,0.0,43,265375710
+"Male","All","50-54 years","Floor of Mouth",0.0,0.0,0.0,0.0,81,265375710
+"Male","All","50-54 years","Gum and Other Mouth",0.0,0.0,0.0,0.0,105,265375710
+"Male","All","50-54 years","Nasopharynx",0.0,0.0,0.0,0.0,56,265375710
+"Male","All","50-54 years","Tonsil",0.1,0.0,0.0,0.1,151,265375710
+"Male","All","50-54 years","Oropharynx",0.0,0.0,0.0,0.0,42,265375710
+"Male","All","50-54 years","Hypopharynx",0.0,0.0,0.0,0.0,89,265375710
+"Male","All","50-54 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,30,265375710
+"Male","All","50-54 years","Esophagus",0.2,0.0,0.2,0.2,548,265375710
+"Male","All","50-54 years","Stomach",0.2,0.0,0.2,0.2,519,265375710
+"Male","All","50-54 years","Small Intestine",0.0,0.0,0.0,0.0,72,265375710
+"Male","All","50-54 years","Colon and Rectum",0.5,0.0,0.5,0.6,1405,265375710
+"Male","All","50-54 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.0,61,265375710
+"Male","All","50-54 years","Liver",0.3,0.0,0.3,0.4,880,265375710
+"Male","All","50-54 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.0,41,265375710
+"Male","All","50-54 years","Gallbladder",0.0,0.0,0.0,0.0,22,265375710
+"Male","All","50-54 years","Other Biliary",0.0,0.0,0.0,0.0,72,265375710
+"Male","All","50-54 years","Pancreas",0.3,0.0,0.3,0.3,806,265375710
+"Male","All","50-54 years","Retroperitoneum",0.0,0.0,0.0,0.0,17,265375710
+"Male","All","50-54 years","Peritoneum, Omentum and Mesentery",0.0,0.0,0.0,0.0,3,265375710
+"Male","All","50-54 years","Other Digestive Organs",0.0,0.0,0.0,0.0,35,265375710
+"Male","All","50-54 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,45,265375710
+"Male","All","50-54 years","Larynx",0.1,0.0,0.1,0.1,271,265375710
+"Male","All","50-54 years","Lung and Bronchus",1.4,0.0,1.3,1.4,3664,265375710
+"Male","All","50-54 years","Pleura",0.0,0.0,0.0,0.0,3,265375710
+"Male","All","50-54 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,0.0,0.0,0.0,9,265375710
+"Male","All","50-54 years","Bones and Joints",0.0,0.0,0.0,0.0,20,265375710
+"Male","All","50-54 years","Soft Tissue including Heart",0.0,0.0,0.0,0.0,87,265375710
+"Male","All","50-54 years","Melanoma of the Skin",0.1,0.0,0.1,0.1,350,265375710
+"Male","All","50-54 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,15,265375710
+"Male","All","50-54 years","Breast",0.0,0.0,0.0,0.0,16,265375710
+"Male","All","50-54 years","Cervix Uteri",0.0,NA,0.0,0.0,0,265375710
+"Male","All","50-54 years","Corpus Uteri",0.0,NA,0.0,0.0,0,265375710
+"Male","All","50-54 years","Uterus, NOS",0.0,NA,0.0,0.0,0,265375710
+"Male","All","50-54 years","Ovary",0.0,NA,0.0,0.0,0,265375710
+"Male","All","50-54 years","Vagina",0.0,NA,0.0,0.0,0,265375710
+"Male","All","50-54 years","Vulva",0.0,NA,0.0,0.0,0,265375710
+"Male","All","50-54 years","Other Female Genital Organs",0.0,NA,0.0,0.0,0,265375710
+"Male","All","50-54 years","Prostate",0.3,0.0,0.2,0.3,665,265375710
+"Male","All","50-54 years","Testis",0.0,0.0,0.0,0.0,26,265375710
+"Male","All","50-54 years","Penis",0.0,0.0,0.0,0.0,24,265375710
+"Male","All","50-54 years","Other Male Genital Organs",0.0,0.0,0.0,0.0,4,265375710
+"Male","All","50-54 years","Urinary Bladder",0.1,0.0,0.1,0.1,310,265375710
+"Male","All","50-54 years","Kidney and Renal Pelvis",0.2,0.0,0.2,0.2,566,265375710
+"Male","All","50-54 years","Ureter",0.0,0.0,0.0,0.0,8,265375710
+"Male","All","50-54 years","Other Urinary Organs",0.0,0.0,0.0,0.0,9,265375710
+"Male","All","50-54 years","Eye and Orbit",0.0,0.0,0.0,0.0,27,265375710
+"Male","All","50-54 years","Brain and Other Nervous System",0.2,0.0,0.2,0.2,503,265375710
+"Male","All","50-54 years","Thyroid",0.0,0.0,0.0,0.0,47,265375710
+"Male","All","50-54 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,25,265375710
+"Male","All","50-54 years","Lymphoma",0.3,0.0,0.2,0.3,686,265375710
+"Male","All","50-54 years","Myeloma",0.1,0.0,0.1,0.1,276,265375710
+"Male","All","50-54 years","Leukemia",0.1,0.0,0.1,0.2,391,265375710
+"Male","All","50-54 years","Mesothelioma",0.0,0.0,0.0,0.0,52,265375710
+"Male","All","50-54 years","Kaposi Sarcoma",0.0,0.0,0.0,0.0,45,265375710
+"Male","All","60-64 years","Lip",0.0,0.0,0.0,0.0,24,265375710
+"Male","All","60-64 years","Tongue",0.1,0.0,0.1,0.1,261,265375710
+"Male","All","60-64 years","Salivary Gland",0.0,0.0,0.0,0.0,69,265375710
+"Male","All","60-64 years","Floor of Mouth",0.0,0.0,0.0,0.0,98,265375710
+"Male","All","60-64 years","Gum and Other Mouth",0.1,0.0,0.0,0.1,133,265375710
+"Male","All","60-64 years","Nasopharynx",0.0,0.0,0.0,0.0,64,265375710
+"Male","All","60-64 years","Tonsil",0.1,0.0,0.0,0.1,142,265375710
+"Male","All","60-64 years","Oropharynx",0.0,0.0,0.0,0.0,49,265375710
+"Male","All","60-64 years","Hypopharynx",0.0,0.0,0.0,0.1,119,265375710
+"Male","All","60-64 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,40,265375710
+"Male","All","60-64 years","Esophagus",0.3,0.0,0.3,0.3,749,265375710
+"Male","All","60-64 years","Stomach",0.3,0.0,0.3,0.3,868,265375710
+"Male","All","60-64 years","Small Intestine",0.0,0.0,0.0,0.0,101,265375710
+"Male","All","60-64 years","Colon and Rectum",0.9,0.0,0.9,0.9,2414,265375710
+"Male","All","60-64 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.0,51,265375710
+"Male","All","60-64 years","Liver",0.3,0.0,0.3,0.3,786,265375710
+"Male","All","60-64 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.0,64,265375710
+"Male","All","60-64 years","Gallbladder",0.0,0.0,0.0,0.0,55,265375710
+"Male","All","60-64 years","Other Biliary",0.0,0.0,0.0,0.1,131,265375710
+"Male","All","60-64 years","Pancreas",0.5,0.0,0.4,0.5,1195,265375710
+"Male","All","60-64 years","Retroperitoneum",0.0,0.0,0.0,0.0,17,265375710
+"Male","All","60-64 years","Peritoneum, Omentum and Mesentery",0.0,0.0,0.0,0.0,8,265375710
+"Male","All","60-64 years","Other Digestive Organs",0.0,0.0,0.0,0.0,38,265375710
+"Male","All","60-64 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,47,265375710
+"Male","All","60-64 years","Larynx",0.2,0.0,0.2,0.2,455,265375710
+"Male","All","60-64 years","Lung and Bronchus",3.0,0.0,3.0,3.1,8065,265375710
+"Male","All","60-64 years","Pleura",0.0,0.0,0.0,0.0,2,265375710
+"Male","All","60-64 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,0.0,0.0,0.0,10,265375710
+"Male","All","60-64 years","Bones and Joints",0.0,0.0,0.0,0.0,24,265375710
+"Male","All","60-64 years","Soft Tissue including Heart",0.0,0.0,0.0,0.0,105,265375710
+"Male","All","60-64 years","Melanoma of the Skin",0.2,0.0,0.1,0.2,407,265375710
+"Male","All","60-64 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,28,265375710
+"Male","All","60-64 years","Breast",0.0,0.0,0.0,0.0,25,265375710
+"Male","All","60-64 years","Cervix Uteri",0.0,NA,0.0,0.0,0,265375710
+"Male","All","60-64 years","Corpus Uteri",0.0,NA,0.0,0.0,0,265375710
+"Male","All","60-64 years","Uterus, NOS",0.0,NA,0.0,0.0,0,265375710
+"Male","All","60-64 years","Ovary",0.0,NA,0.0,0.0,0,265375710
+"Male","All","60-64 years","Vagina",0.0,NA,0.0,0.0,0,265375710
+"Male","All","60-64 years","Vulva",0.0,NA,0.0,0.0,0,265375710
+"Male","All","60-64 years","Other Female Genital Organs",0.0,NA,0.0,0.0,0,265375710
+"Male","All","60-64 years","Prostate",0.9,0.0,0.9,1.0,2505,265375710
+"Male","All","60-64 years","Testis",0.0,0.0,0.0,0.0,15,265375710
+"Male","All","60-64 years","Penis",0.0,0.0,0.0,0.0,28,265375710
+"Male","All","60-64 years","Other Male Genital Organs",0.0,0.0,0.0,0.0,2,265375710
+"Male","All","60-64 years","Urinary Bladder",0.3,0.0,0.3,0.3,833,265375710
+"Male","All","60-64 years","Kidney and Renal Pelvis",0.3,0.0,0.3,0.3,807,265375710
+"Male","All","60-64 years","Ureter",0.0,0.0,0.0,0.0,27,265375710
+"Male","All","60-64 years","Other Urinary Organs",0.0,0.0,0.0,0.0,16,265375710
+"Male","All","60-64 years","Eye and Orbit",0.0,0.0,0.0,0.0,28,265375710
+"Male","All","60-64 years","Brain and Other Nervous System",0.2,0.0,0.2,0.2,576,265375710
+"Male","All","60-64 years","Thyroid",0.0,0.0,0.0,0.0,65,265375710
+"Male","All","60-64 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,35,265375710
+"Male","All","60-64 years","Lymphoma",0.3,0.0,0.3,0.4,881,265375710
+"Male","All","60-64 years","Myeloma",0.2,0.0,0.1,0.2,436,265375710
+"Male","All","60-64 years","Leukemia",0.3,0.0,0.2,0.3,682,265375710
+"Male","All","60-64 years","Mesothelioma",0.0,0.0,0.0,0.1,131,265375710
+"Male","All","60-64 years","Kaposi Sarcoma",0.0,0.0,0.0,0.0,9,265375710
+"Male","All","70-74 years","Lip",0.0,0.0,0.0,0.0,64,265375710
+"Male","All","70-74 years","Tongue",0.1,0.0,0.1,0.1,254,265375710
+"Male","All","70-74 years","Salivary Gland",0.0,0.0,0.0,0.0,92,265375710
+"Male","All","70-74 years","Floor of Mouth",0.0,0.0,0.0,0.0,76,265375710
+"Male","All","70-74 years","Gum and Other Mouth",0.0,0.0,0.0,0.1,128,265375710
+"Male","All","70-74 years","Nasopharynx",0.0,0.0,0.0,0.0,46,265375710
+"Male","All","70-74 years","Tonsil",0.0,0.0,0.0,0.0,104,265375710
+"Male","All","70-74 years","Oropharynx",0.0,0.0,0.0,0.0,45,265375710
+"Male","All","70-74 years","Hypopharynx",0.1,0.0,0.0,0.1,153,265375710
+"Male","All","70-74 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,40,265375710
+"Male","All","70-74 years","Esophagus",0.4,0.0,0.3,0.4,971,265375710
+"Male","All","70-74 years","Stomach",0.5,0.0,0.4,0.5,1232,265375710
+"Male","All","70-74 years","Small Intestine",0.1,0.0,0.0,0.1,137,265375710
+"Male","All","70-74 years","Colon and Rectum",1.5,0.0,1.5,1.6,4059,265375710
+"Male","All","70-74 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.0,62,265375710
+"Male","All","70-74 years","Liver",0.3,0.0,0.3,0.4,896,265375710
+"Male","All","70-74 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.1,119,265375710
+"Male","All","70-74 years","Gallbladder",0.0,0.0,0.0,0.0,107,265375710
+"Male","All","70-74 years","Other Biliary",0.1,0.0,0.1,0.1,224,265375710
+"Male","All","70-74 years","Pancreas",0.6,0.0,0.6,0.7,1646,265375710
+"Male","All","70-74 years","Retroperitoneum",0.0,0.0,0.0,0.0,36,265375710
+"Male","All","70-74 years","Peritoneum, Omentum and Mesentery",0.0,0.0,0.0,0.0,6,265375710
+"Male","All","70-74 years","Other Digestive Organs",0.0,0.0,0.0,0.0,67,265375710
+"Male","All","70-74 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,49,265375710
+"Male","All","70-74 years","Larynx",0.2,0.0,0.2,0.2,495,265375710
+"Male","All","70-74 years","Lung and Bronchus",4.5,0.0,4.4,4.6,11992,265375710
+"Male","All","70-74 years","Pleura",0.0,0.0,0.0,0.0,5,265375710
+"Male","All","70-74 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,0.0,0.0,0.0,17,265375710
+"Male","All","70-74 years","Bones and Joints",0.0,0.0,0.0,0.0,40,265375710
+"Male","All","70-74 years","Soft Tissue including Heart",0.1,0.0,0.0,0.1,156,265375710
+"Male","All","70-74 years","Melanoma of the Skin",0.3,0.0,0.3,0.3,737,265375710
+"Male","All","70-74 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,108,265375710
+"Male","All","70-74 years","Breast",0.0,0.0,0.0,0.0,39,265375710
+"Male","All","70-74 years","Cervix Uteri",0.0,NA,0.0,0.0,0,265375710
+"Male","All","70-74 years","Corpus Uteri",0.0,NA,0.0,0.0,0,265375710
+"Male","All","70-74 years","Uterus, NOS",0.0,NA,0.0,0.0,0,265375710
+"Male","All","70-74 years","Ovary",0.0,NA,0.0,0.0,0,265375710
+"Male","All","70-74 years","Vagina",0.0,NA,0.0,0.0,0,265375710
+"Male","All","70-74 years","Vulva",0.0,NA,0.0,0.0,0,265375710
+"Male","All","70-74 years","Other Female Genital Organs",0.0,NA,0.0,0.0,0,265375710
+"Male","All","70-74 years","Prostate",2.3,0.0,2.2,2.3,6006,265375710
+"Male","All","70-74 years","Testis",0.0,0.0,0.0,0.0,10,265375710
+"Male","All","70-74 years","Penis",0.0,0.0,0.0,0.0,62,265375710
+"Male","All","70-74 years","Other Male Genital Organs",0.0,0.0,0.0,0.0,12,265375710
+"Male","All","70-74 years","Urinary Bladder",0.8,0.0,0.8,0.8,2141,265375710
+"Male","All","70-74 years","Kidney and Renal Pelvis",0.4,0.0,0.4,0.4,1018,265375710
+"Male","All","70-74 years","Ureter",0.0,0.0,0.0,0.0,62,265375710
+"Male","All","70-74 years","Other Urinary Organs",0.0,0.0,0.0,0.0,42,265375710
+"Male","All","70-74 years","Eye and Orbit",0.0,0.0,0.0,0.0,39,265375710
+"Male","All","70-74 years","Brain and Other Nervous System",0.3,0.0,0.2,0.3,667,265375710
+"Male","All","70-74 years","Thyroid",0.0,0.0,0.0,0.0,96,265375710
+"Male","All","70-74 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,37,265375710
+"Male","All","70-74 years","Lymphoma",0.6,0.0,0.5,0.6,1502,265375710
+"Male","All","70-74 years","Myeloma",0.3,0.0,0.3,0.3,763,265375710
+"Male","All","70-74 years","Leukemia",0.5,0.0,0.5,0.5,1272,265375710
+"Male","All","70-74 years","Mesothelioma",0.1,0.0,0.1,0.1,314,265375710
+"Male","All","70-74 years","Kaposi Sarcoma",0.0,0.0,0.0,0.0,9,265375710
+"Male","Black","50-54 years","Lip",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Tongue",0.2,0.0,0.1,0.2,48,28836856
+"Male","Black","50-54 years","Salivary Gland",0.0,0.0,0.0,0.0,5,28836856
+"Male","Black","50-54 years","Floor of Mouth",0.1,0.0,0.0,0.1,19,28836856
+"Male","Black","50-54 years","Gum and Other Mouth",0.0,0.0,0.0,0.1,14,28836856
+"Male","Black","50-54 years","Nasopharynx",0.0,0.0,0.0,0.0,6,28836856
+"Male","Black","50-54 years","Tonsil",0.1,0.0,0.1,0.1,25,28836856
+"Male","Black","50-54 years","Oropharynx",0.0,0.0,0.0,0.1,11,28836856
+"Male","Black","50-54 years","Hypopharynx",0.1,0.0,0.1,0.1,29,28836856
+"Male","Black","50-54 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,5,28836856
+"Male","Black","50-54 years","Esophagus",0.4,0.0,0.3,0.4,105,28836856
+"Male","Black","50-54 years","Stomach",0.3,0.0,0.3,0.4,90,28836856
+"Male","Black","50-54 years","Small Intestine",0.1,0.0,0.0,0.1,16,28836856
+"Male","Black","50-54 years","Colon and Rectum",0.8,0.1,0.7,0.9,219,28836856
+"Male","Black","50-54 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.1,8,28836856
+"Male","Black","50-54 years","Liver",0.5,0.0,0.5,0.6,155,28836856
+"Male","Black","50-54 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","50-54 years","Gallbladder",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","50-54 years","Other Biliary",0.0,0.0,0.0,0.1,8,28836856
+"Male","Black","50-54 years","Pancreas",0.4,0.0,0.3,0.5,111,28836856
+"Male","Black","50-54 years","Retroperitoneum",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","50-54 years","Peritoneum, Omentum and Mesentery",0.0,0.0,0.0,0.0,2,28836856
+"Male","Black","50-54 years","Other Digestive Organs",0.0,0.0,0.0,0.0,4,28836856
+"Male","Black","50-54 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,5,28836856
+"Male","Black","50-54 years","Larynx",0.2,0.0,0.2,0.3,65,28836856
+"Male","Black","50-54 years","Lung and Bronchus",2.1,0.1,1.9,2.2,595,28836856
+"Male","Black","50-54 years","Pleura",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Bones and Joints",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","50-54 years","Soft Tissue including Heart",0.0,0.0,0.0,0.1,7,28836856
+"Male","Black","50-54 years","Melanoma of the Skin",0.0,0.0,0.0,0.0,2,28836856
+"Male","Black","50-54 years","Other Non-Epithelial Skin",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Breast",0.0,0.0,0.0,0.0,4,28836856
+"Male","Black","50-54 years","Cervix Uteri",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Corpus Uteri",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Uterus, NOS",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Ovary",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Vagina",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Vulva",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Other Female Genital Organs",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Prostate",0.7,0.0,0.6,0.8,196,28836856
+"Male","Black","50-54 years","Testis",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","50-54 years","Penis",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","50-54 years","Other Male Genital Organs",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","50-54 years","Urinary Bladder",0.1,0.0,0.1,0.1,25,28836856
+"Male","Black","50-54 years","Kidney and Renal Pelvis",0.3,0.0,0.2,0.3,76,28836856
+"Male","Black","50-54 years","Ureter",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Other Urinary Organs",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","50-54 years","Eye and Orbit",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","50-54 years","Brain and Other Nervous System",0.1,0.0,0.1,0.1,29,28836856
+"Male","Black","50-54 years","Thyroid",0.0,0.0,0.0,0.0,4,28836856
+"Male","Black","50-54 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,2,28836856
+"Male","Black","50-54 years","Lymphoma",0.3,0.0,0.3,0.4,91,28836856
+"Male","Black","50-54 years","Myeloma",0.2,0.0,0.2,0.3,67,28836856
+"Male","Black","50-54 years","Leukemia",0.2,0.0,0.1,0.2,48,28836856
+"Male","Black","50-54 years","Mesothelioma",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","50-54 years","Kaposi Sarcoma",0.0,0.0,0.0,0.1,13,28836856
+"Male","Black","60-64 years","Lip",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Tongue",0.1,0.0,0.1,0.2,34,28836856
+"Male","Black","60-64 years","Salivary Gland",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","60-64 years","Floor of Mouth",0.1,0.0,0.0,0.1,18,28836856
+"Male","Black","60-64 years","Gum and Other Mouth",0.1,0.0,0.0,0.1,21,28836856
+"Male","Black","60-64 years","Nasopharynx",0.0,0.0,0.0,0.1,7,28836856
+"Male","Black","60-64 years","Tonsil",0.1,0.0,0.1,0.1,23,28836856
+"Male","Black","60-64 years","Oropharynx",0.0,0.0,0.0,0.1,10,28836856
+"Male","Black","60-64 years","Hypopharynx",0.1,0.0,0.1,0.1,23,28836856
+"Male","Black","60-64 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.1,9,28836856
+"Male","Black","60-64 years","Esophagus",0.5,0.0,0.4,0.5,131,28836856
+"Male","Black","60-64 years","Stomach",0.4,0.0,0.3,0.5,117,28836856
+"Male","Black","60-64 years","Small Intestine",0.0,0.0,0.0,0.1,10,28836856
+"Male","Black","60-64 years","Colon and Rectum",1.1,0.1,1.0,1.2,312,28836856
+"Male","Black","60-64 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","60-64 years","Liver",0.3,0.0,0.3,0.4,90,28836856
+"Male","Black","60-64 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.1,8,28836856
+"Male","Black","60-64 years","Gallbladder",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","60-64 years","Other Biliary",0.0,0.0,0.0,0.1,11,28836856
+"Male","Black","60-64 years","Pancreas",0.5,0.0,0.4,0.6,151,28836856
+"Male","Black","60-64 years","Retroperitoneum",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Peritoneum, Omentum and Mesentery",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","60-64 years","Other Digestive Organs",0.0,0.0,0.0,0.1,10,28836856
+"Male","Black","60-64 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,5,28836856
+"Male","Black","60-64 years","Larynx",0.3,0.0,0.2,0.3,81,28836856
+"Male","Black","60-64 years","Lung and Bronchus",3.5,0.1,3.3,3.8,1023,28836856
+"Male","Black","60-64 years","Pleura",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","60-64 years","Bones and Joints",0.0,0.0,0.0,0.0,2,28836856
+"Male","Black","60-64 years","Soft Tissue including Heart",0.0,0.0,0.0,0.1,9,28836856
+"Male","Black","60-64 years","Melanoma of the Skin",0.0,0.0,0.0,0.1,7,28836856
+"Male","Black","60-64 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","60-64 years","Breast",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","60-64 years","Cervix Uteri",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Corpus Uteri",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Uterus, NOS",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Ovary",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Vagina",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Vulva",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Other Female Genital Organs",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Prostate",2.0,0.1,1.8,2.2,577,28836856
+"Male","Black","60-64 years","Testis",0.0,0.0,0.0,0.0,2,28836856
+"Male","Black","60-64 years","Penis",0.0,0.0,0.0,0.0,4,28836856
+"Male","Black","60-64 years","Other Male Genital Organs",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Urinary Bladder",0.2,0.0,0.2,0.3,58,28836856
+"Male","Black","60-64 years","Kidney and Renal Pelvis",0.2,0.0,0.2,0.3,72,28836856
+"Male","Black","60-64 years","Ureter",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","60-64 years","Other Urinary Organs",0.0,0.0,0.0,0.0,2,28836856
+"Male","Black","60-64 years","Eye and Orbit",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","60-64 years","Brain and Other Nervous System",0.1,0.0,0.1,0.1,30,28836856
+"Male","Black","60-64 years","Thyroid",0.0,0.0,0.0,0.0,4,28836856
+"Male","Black","60-64 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","60-64 years","Lymphoma",0.3,0.0,0.2,0.3,79,28836856
+"Male","Black","60-64 years","Myeloma",0.3,0.0,0.2,0.3,73,28836856
+"Male","Black","60-64 years","Leukemia",0.2,0.0,0.1,0.3,56,28836856
+"Male","Black","60-64 years","Mesothelioma",0.0,0.0,0.0,0.0,4,28836856
+"Male","Black","60-64 years","Kaposi Sarcoma",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","70-74 years","Lip",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","70-74 years","Tongue",0.1,0.0,0.1,0.1,28,28836856
+"Male","Black","70-74 years","Salivary Gland",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","70-74 years","Floor of Mouth",0.0,0.0,0.0,0.0,5,28836856
+"Male","Black","70-74 years","Gum and Other Mouth",0.0,0.0,0.0,0.1,7,28836856
+"Male","Black","70-74 years","Nasopharynx",0.0,0.0,0.0,0.0,2,28836856
+"Male","Black","70-74 years","Tonsil",0.0,0.0,0.0,0.1,13,28836856
+"Male","Black","70-74 years","Oropharynx",0.0,0.0,0.0,0.1,7,28836856
+"Male","Black","70-74 years","Hypopharynx",0.1,0.0,0.0,0.1,20,28836856
+"Male","Black","70-74 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,6,28836856
+"Male","Black","70-74 years","Esophagus",0.4,0.0,0.3,0.5,113,28836856
+"Male","Black","70-74 years","Stomach",0.5,0.0,0.4,0.5,133,28836856
+"Male","Black","70-74 years","Small Intestine",0.1,0.0,0.0,0.1,22,28836856
+"Male","Black","70-74 years","Colon and Rectum",1.3,0.1,1.2,1.4,370,28836856
+"Male","Black","70-74 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.1,7,28836856
+"Male","Black","70-74 years","Liver",0.3,0.0,0.2,0.3,73,28836856
+"Male","Black","70-74 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.0,6,28836856
+"Male","Black","70-74 years","Gallbladder",0.0,0.0,0.0,0.1,11,28836856
+"Male","Black","70-74 years","Other Biliary",0.0,0.0,0.0,0.1,10,28836856
+"Male","Black","70-74 years","Pancreas",0.5,0.0,0.4,0.6,145,28836856
+"Male","Black","70-74 years","Retroperitoneum",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","70-74 years","Peritoneum, Omentum and Mesentery",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Other Digestive Organs",0.0,0.0,0.0,0.1,7,28836856
+"Male","Black","70-74 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,4,28836856
+"Male","Black","70-74 years","Larynx",0.2,0.0,0.1,0.2,51,28836856
+"Male","Black","70-74 years","Lung and Bronchus",3.6,0.1,3.4,3.8,1028,28836856
+"Male","Black","70-74 years","Pleura",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Bones and Joints",0.0,0.0,0.0,0.0,2,28836856
+"Male","Black","70-74 years","Soft Tissue including Heart",0.0,0.0,0.0,0.1,14,28836856
+"Male","Black","70-74 years","Melanoma of the Skin",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","70-74 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,2,28836856
+"Male","Black","70-74 years","Breast",0.0,0.0,0.0,0.0,5,28836856
+"Male","Black","70-74 years","Cervix Uteri",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Corpus Uteri",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Uterus, NOS",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Ovary",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Vagina",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Vulva",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Other Female Genital Organs",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Prostate",2.9,0.1,2.7,3.1,834,28836856
+"Male","Black","70-74 years","Testis",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Penis",0.0,0.0,0.0,0.0,6,28836856
+"Male","Black","70-74 years","Other Male Genital Organs",0.0,0.0,0.0,0.0,2,28836856
+"Male","Black","70-74 years","Urinary Bladder",0.3,0.0,0.3,0.4,96,28836856
+"Male","Black","70-74 years","Kidney and Renal Pelvis",0.3,0.0,0.2,0.3,73,28836856
+"Male","Black","70-74 years","Ureter",0.0,0.0,0.0,0.0,1,28836856
+"Male","Black","70-74 years","Other Urinary Organs",0.0,0.0,0.0,0.0,5,28836856
+"Male","Black","70-74 years","Eye and Orbit",0.0,NA,0.0,0.0,0,28836856
+"Male","Black","70-74 years","Brain and Other Nervous System",0.1,0.0,0.1,0.1,27,28836856
+"Male","Black","70-74 years","Thyroid",0.0,0.0,0.0,0.1,8,28836856
+"Male","Black","70-74 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,3,28836856
+"Male","Black","70-74 years","Lymphoma",0.3,0.0,0.2,0.3,79,28836856
+"Male","Black","70-74 years","Myeloma",0.3,0.0,0.3,0.4,95,28836856
+"Male","Black","70-74 years","Leukemia",0.3,0.0,0.2,0.3,79,28836856
+"Male","Black","70-74 years","Mesothelioma",0.0,0.0,0.0,0.1,12,28836856
+"Male","Black","70-74 years","Kaposi Sarcoma",0.0,NA,0.0,0.0,0,28836856
+"Female","All","50-54 years","Lip",0.0,0.0,0.0,0.0,4,271924999
+"Female","All","50-54 years","Tongue",0.0,0.0,0.0,0.0,81,271924999
+"Female","All","50-54 years","Salivary Gland",0.0,0.0,0.0,0.0,15,271924999
+"Female","All","50-54 years","Floor of Mouth",0.0,0.0,0.0,0.0,12,271924999
+"Female","All","50-54 years","Gum and Other Mouth",0.0,0.0,0.0,0.0,28,271924999
+"Female","All","50-54 years","Nasopharynx",0.0,0.0,0.0,0.0,21,271924999
+"Female","All","50-54 years","Tonsil",0.0,0.0,0.0,0.0,24,271924999
+"Female","All","50-54 years","Oropharynx",0.0,0.0,0.0,0.0,7,271924999
+"Female","All","50-54 years","Hypopharynx",0.0,0.0,0.0,0.0,25,271924999
+"Female","All","50-54 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,8,271924999
+"Female","All","50-54 years","Esophagus",0.0,0.0,0.0,0.0,85,271924999
+"Female","All","50-54 years","Stomach",0.1,0.0,0.1,0.1,251,271924999
+"Female","All","50-54 years","Small Intestine",0.0,0.0,0.0,0.0,36,271924999
+"Female","All","50-54 years","Colon and Rectum",0.4,0.0,0.4,0.4,1093,271924999
+"Female","All","50-54 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.0,66,271924999
+"Female","All","50-54 years","Liver",0.1,0.0,0.1,0.1,164,271924999
+"Female","All","50-54 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.0,25,271924999
+"Female","All","50-54 years","Gallbladder",0.0,0.0,0.0,0.0,72,271924999
+"Female","All","50-54 years","Other Biliary",0.0,0.0,0.0,0.0,61,271924999
+"Female","All","50-54 years","Pancreas",0.2,0.0,0.2,0.2,506,271924999
+"Female","All","50-54 years","Retroperitoneum",0.0,0.0,0.0,0.0,15,271924999
+"Female","All","50-54 years","Peritoneum, Omentum and Mesentery",0.0,0.0,0.0,0.0,52,271924999
+"Female","All","50-54 years","Other Digestive Organs",0.0,0.0,0.0,0.0,24,271924999
+"Female","All","50-54 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,17,271924999
+"Female","All","50-54 years","Larynx",0.0,0.0,0.0,0.0,62,271924999
+"Female","All","50-54 years","Lung and Bronchus",1.0,0.0,0.9,1.0,2683,271924999
+"Female","All","50-54 years","Pleura",0.0,0.0,0.0,0.0,2,271924999
+"Female","All","50-54 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,0.0,0.0,0.0,4,271924999
+"Female","All","50-54 years","Bones and Joints",0.0,0.0,0.0,0.0,18,271924999
+"Female","All","50-54 years","Soft Tissue including Heart",0.0,0.0,0.0,0.0,74,271924999
+"Female","All","50-54 years","Melanoma of the Skin",0.1,0.0,0.0,0.1,158,271924999
+"Female","All","50-54 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,6,271924999
+"Female","All","50-54 years","Breast",0.9,0.0,0.9,1.0,2541,271924999
+"Female","All","50-54 years","Cervix Uteri",0.1,0.0,0.1,0.1,362,271924999
+"Female","All","50-54 years","Corpus Uteri",0.2,0.0,0.1,0.2,415,271924999
+"Female","All","50-54 years","Uterus, NOS",0.0,0.0,0.0,0.0,39,271924999
+"Female","All","50-54 years","Ovary",0.3,0.0,0.3,0.3,758,271924999
+"Female","All","50-54 years","Vagina",0.0,0.0,0.0,0.0,35,271924999
+"Female","All","50-54 years","Vulva",0.0,0.0,0.0,0.0,33,271924999
+"Female","All","50-54 years","Other Female Genital Organs",0.0,0.0,0.0,0.0,29,271924999
+"Female","All","50-54 years","Prostate",0.0,NA,0.0,0.0,0,271924999
+"Female","All","50-54 years","Testis",0.0,NA,0.0,0.0,0,271924999
+"Female","All","50-54 years","Penis",0.0,NA,0.0,0.0,0,271924999
+"Female","All","50-54 years","Other Male Genital Organs",0.0,NA,0.0,0.0,0,271924999
+"Female","All","50-54 years","Urinary Bladder",0.0,0.0,0.0,0.0,82,271924999
+"Female","All","50-54 years","Kidney and Renal Pelvis",0.1,0.0,0.1,0.1,233,271924999
+"Female","All","50-54 years","Ureter",0.0,0.0,0.0,0.0,3,271924999
+"Female","All","50-54 years","Other Urinary Organs",0.0,0.0,0.0,0.0,9,271924999
+"Female","All","50-54 years","Eye and Orbit",0.0,0.0,0.0,0.0,10,271924999
+"Female","All","50-54 years","Brain and Other Nervous System",0.1,0.0,0.1,0.1,342,271924999
+"Female","All","50-54 years","Thyroid",0.0,0.0,0.0,0.0,58,271924999
+"Female","All","50-54 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,25,271924999
+"Female","All","50-54 years","Lymphoma",0.1,0.0,0.1,0.1,337,271924999
+"Female","All","50-54 years","Myeloma",0.1,0.0,0.1,0.1,201,271924999
+"Female","All","50-54 years","Leukemia",0.1,0.0,0.1,0.1,285,271924999
+"Female","All","50-54 years","Mesothelioma",0.0,0.0,0.0,0.0,22,271924999
+"Female","All","50-54 years","Kaposi Sarcoma",0.0,0.0,0.0,0.0,4,271924999
+"Female","All","60-64 years","Lip",0.0,0.0,0.0,0.0,5,271924999
+"Female","All","60-64 years","Tongue",0.0,0.0,0.0,0.0,93,271924999
+"Female","All","60-64 years","Salivary Gland",0.0,0.0,0.0,0.0,32,271924999
+"Female","All","60-64 years","Floor of Mouth",0.0,0.0,0.0,0.0,22,271924999
+"Female","All","60-64 years","Gum and Other Mouth",0.0,0.0,0.0,0.0,56,271924999
+"Female","All","60-64 years","Nasopharynx",0.0,0.0,0.0,0.0,20,271924999
+"Female","All","60-64 years","Tonsil",0.0,0.0,0.0,0.0,45,271924999
+"Female","All","60-64 years","Oropharynx",0.0,0.0,0.0,0.0,7,271924999
+"Female","All","60-64 years","Hypopharynx",0.0,0.0,0.0,0.0,27,271924999
+"Female","All","60-64 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,16,271924999
+"Female","All","60-64 years","Esophagus",0.1,0.0,0.1,0.1,186,271924999
+"Female","All","60-64 years","Stomach",0.1,0.0,0.1,0.1,337,271924999
+"Female","All","60-64 years","Small Intestine",0.0,0.0,0.0,0.0,79,271924999
+"Female","All","60-64 years","Colon and Rectum",0.6,0.0,0.6,0.6,1637,271924999
+"Female","All","60-64 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.0,51,271924999
+"Female","All","60-64 years","Liver",0.1,0.0,0.1,0.1,287,271924999
+"Female","All","60-64 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.0,49,271924999
+"Female","All","60-64 years","Gallbladder",0.0,0.0,0.0,0.1,133,271924999
+"Female","All","60-64 years","Other Biliary",0.0,0.0,0.0,0.0,92,271924999
+"Female","All","60-64 years","Pancreas",0.3,0.0,0.3,0.4,919,271924999
+"Female","All","60-64 years","Retroperitoneum",0.0,0.0,0.0,0.0,21,271924999
+"Female","All","60-64 years","Peritoneum, Omentum and Mesentery",0.0,0.0,0.0,0.0,103,271924999
+"Female","All","60-64 years","Other Digestive Organs",0.0,0.0,0.0,0.0,29,271924999
+"Female","All","60-64 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,24,271924999
+"Female","All","60-64 years","Larynx",0.0,0.0,0.0,0.1,115,271924999
+"Female","All","60-64 years","Lung and Bronchus",2.1,0.0,2.0,2.1,5640,271924999
+"Female","All","60-64 years","Pleura",0.0,0.0,0.0,0.0,2,271924999
+"Female","All","60-64 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,0.0,0.0,0.0,10,271924999
+"Female","All","60-64 years","Bones and Joints",0.0,0.0,0.0,0.0,13,271924999
+"Female","All","60-64 years","Soft Tissue including Heart",0.0,0.0,0.0,0.0,86,271924999
+"Female","All","60-64 years","Melanoma of the Skin",0.1,0.0,0.0,0.1,155,271924999
+"Female","All","60-64 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,14,271924999
+"Female","All","60-64 years","Breast",0.9,0.0,0.9,1.0,2568,271924999
+"Female","All","60-64 years","Cervix Uteri",0.1,0.0,0.1,0.1,282,271924999
+"Female","All","60-64 years","Corpus Uteri",0.3,0.0,0.2,0.3,714,271924999
+"Female","All","60-64 years","Uterus, NOS",0.0,0.0,0.0,0.0,47,271924999
+"Female","All","60-64 years","Ovary",0.4,0.0,0.4,0.4,1029,271924999
+"Female","All","60-64 years","Vagina",0.0,0.0,0.0,0.0,50,271924999
+"Female","All","60-64 years","Vulva",0.0,0.0,0.0,0.0,44,271924999
+"Female","All","60-64 years","Other Female Genital Organs",0.0,0.0,0.0,0.0,33,271924999
+"Female","All","60-64 years","Prostate",0.0,NA,0.0,0.0,0,271924999
+"Female","All","60-64 years","Testis",0.0,NA,0.0,0.0,0,271924999
+"Female","All","60-64 years","Penis",0.0,NA,0.0,0.0,0,271924999
+"Female","All","60-64 years","Other Male Genital Organs",0.0,NA,0.0,0.0,0,271924999
+"Female","All","60-64 years","Urinary Bladder",0.1,0.0,0.1,0.1,215,271924999
+"Female","All","60-64 years","Kidney and Renal Pelvis",0.1,0.0,0.1,0.1,358,271924999
+"Female","All","60-64 years","Ureter",0.0,0.0,0.0,0.0,9,271924999
+"Female","All","60-64 years","Other Urinary Organs",0.0,0.0,0.0,0.0,12,271924999
+"Female","All","60-64 years","Eye and Orbit",0.0,0.0,0.0,0.0,21,271924999
+"Female","All","60-64 years","Brain and Other Nervous System",0.1,0.0,0.1,0.2,395,271924999
+"Female","All","60-64 years","Thyroid",0.0,0.0,0.0,0.0,78,271924999
+"Female","All","60-64 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,24,271924999
+"Female","All","60-64 years","Lymphoma",0.2,0.0,0.2,0.2,572,271924999
+"Female","All","60-64 years","Myeloma",0.1,0.0,0.1,0.1,316,271924999
+"Female","All","60-64 years","Leukemia",0.1,0.0,0.1,0.2,397,271924999
+"Female","All","60-64 years","Mesothelioma",0.0,0.0,0.0,0.0,31,271924999
+"Female","All","60-64 years","Kaposi Sarcoma",0.0,NA,0.0,0.0,0,271924999
+"Female","All","70-74 years","Lip",0.0,0.0,0.0,0.0,13,271924999
+"Female","All","70-74 years","Tongue",0.0,0.0,0.0,0.1,117,271924999
+"Female","All","70-74 years","Salivary Gland",0.0,0.0,0.0,0.0,37,271924999
+"Female","All","70-74 years","Floor of Mouth",0.0,0.0,0.0,0.0,41,271924999
+"Female","All","70-74 years","Gum and Other Mouth",0.0,0.0,0.0,0.0,108,271924999
+"Female","All","70-74 years","Nasopharynx",0.0,0.0,0.0,0.0,19,271924999
+"Female","All","70-74 years","Tonsil",0.0,0.0,0.0,0.0,53,271924999
+"Female","All","70-74 years","Oropharynx",0.0,0.0,0.0,0.0,20,271924999
+"Female","All","70-74 years","Hypopharynx",0.0,0.0,0.0,0.0,49,271924999
+"Female","All","70-74 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,22,271924999
+"Female","All","70-74 years","Esophagus",0.1,0.0,0.1,0.1,323,271924999
+"Female","All","70-74 years","Stomach",0.2,0.0,0.2,0.3,678,271924999
+"Female","All","70-74 years","Small Intestine",0.0,0.0,0.0,0.1,117,271924999
+"Female","All","70-74 years","Colon and Rectum",1.2,0.0,1.2,1.2,3248,271924999
+"Female","All","70-74 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.0,85,271924999
+"Female","All","70-74 years","Liver",0.2,0.0,0.2,0.2,488,271924999
+"Female","All","70-74 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.0,84,271924999
+"Female","All","70-74 years","Gallbladder",0.1,0.0,0.1,0.1,204,271924999
+"Female","All","70-74 years","Other Biliary",0.1,0.0,0.1,0.1,185,271924999
+"Female","All","70-74 years","Pancreas",0.6,0.0,0.6,0.7,1731,271924999
+"Female","All","70-74 years","Retroperitoneum",0.0,0.0,0.0,0.0,32,271924999
+"Female","All","70-74 years","Peritoneum, Omentum and Mesentery",0.1,0.0,0.1,0.1,162,271924999
+"Female","All","70-74 years","Other Digestive Organs",0.0,0.0,0.0,0.0,67,271924999
+"Female","All","70-74 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,31,271924999
+"Female","All","70-74 years","Larynx",0.0,0.0,0.0,0.1,134,271924999
+"Female","All","70-74 years","Lung and Bronchus",3.3,0.0,3.2,3.4,8944,271924999
+"Female","All","70-74 years","Pleura",0.0,0.0,0.0,0.0,4,271924999
+"Female","All","70-74 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,0.0,0.0,0.0,6,271924999
+"Female","All","70-74 years","Bones and Joints",0.0,0.0,0.0,0.0,22,271924999
+"Female","All","70-74 years","Soft Tissue including Heart",0.0,0.0,0.0,0.1,115,271924999
+"Female","All","70-74 years","Melanoma of the Skin",0.1,0.0,0.1,0.1,305,271924999
+"Female","All","70-74 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,44,271924999
+"Female","All","70-74 years","Breast",1.4,0.0,1.3,1.4,3696,271924999
+"Female","All","70-74 years","Cervix Uteri",0.1,0.0,0.1,0.1,240,271924999
+"Female","All","70-74 years","Corpus Uteri",0.4,0.0,0.3,0.4,1001,271924999
+"Female","All","70-74 years","Uterus, NOS",0.0,0.0,0.0,0.0,51,271924999
+"Female","All","70-74 years","Ovary",0.5,0.0,0.4,0.5,1272,271924999
+"Female","All","70-74 years","Vagina",0.0,0.0,0.0,0.0,54,271924999
+"Female","All","70-74 years","Vulva",0.0,0.0,0.0,0.0,109,271924999
+"Female","All","70-74 years","Other Female Genital Organs",0.0,0.0,0.0,0.0,50,271924999
+"Female","All","70-74 years","Prostate",0.0,NA,0.0,0.0,0,271924999
+"Female","All","70-74 years","Testis",0.0,NA,0.0,0.0,0,271924999
+"Female","All","70-74 years","Penis",0.0,NA,0.0,0.0,0,271924999
+"Female","All","70-74 years","Other Male Genital Organs",0.0,NA,0.0,0.0,0,271924999
+"Female","All","70-74 years","Urinary Bladder",0.2,0.0,0.2,0.2,626,271924999
+"Female","All","70-74 years","Kidney and Renal Pelvis",0.2,0.0,0.2,0.2,589,271924999
+"Female","All","70-74 years","Ureter",0.0,0.0,0.0,0.0,42,271924999
+"Female","All","70-74 years","Other Urinary Organs",0.0,0.0,0.0,0.0,13,271924999
+"Female","All","70-74 years","Eye and Orbit",0.0,0.0,0.0,0.0,21,271924999
+"Female","All","70-74 years","Brain and Other Nervous System",0.2,0.0,0.2,0.2,529,271924999
+"Female","All","70-74 years","Thyroid",0.1,0.0,0.0,0.1,137,271924999
+"Female","All","70-74 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,21,271924999
+"Female","All","70-74 years","Lymphoma",0.4,0.0,0.4,0.5,1179,271924999
+"Female","All","70-74 years","Myeloma",0.2,0.0,0.2,0.2,612,271924999
+"Female","All","70-74 years","Leukemia",0.3,0.0,0.3,0.3,772,271924999
+"Female","All","70-74 years","Mesothelioma",0.0,0.0,0.0,0.0,47,271924999
+"Female","All","70-74 years","Kaposi Sarcoma",0.0,0.0,0.0,0.0,4,271924999
+"Female","Black","50-54 years","Lip",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","50-54 years","Tongue",0.0,0.0,0.0,0.1,13,31230113
+"Female","Black","50-54 years","Salivary Gland",0.0,0.0,0.0,0.0,5,31230113
+"Female","Black","50-54 years","Floor of Mouth",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","50-54 years","Gum and Other Mouth",0.0,0.0,0.0,0.1,13,31230113
+"Female","Black","50-54 years","Nasopharynx",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","50-54 years","Tonsil",0.0,0.0,0.0,0.0,6,31230113
+"Female","Black","50-54 years","Oropharynx",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","50-54 years","Hypopharynx",0.0,0.0,0.0,0.1,8,31230113
+"Female","Black","50-54 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","50-54 years","Esophagus",0.1,0.0,0.1,0.1,25,31230113
+"Female","Black","50-54 years","Stomach",0.1,0.0,0.1,0.2,45,31230113
+"Female","Black","50-54 years","Small Intestine",0.0,0.0,0.0,0.1,12,31230113
+"Female","Black","50-54 years","Colon and Rectum",0.6,0.0,0.5,0.7,194,31230113
+"Female","Black","50-54 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.1,12,31230113
+"Female","Black","50-54 years","Liver",0.1,0.0,0.1,0.1,28,31230113
+"Female","Black","50-54 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","50-54 years","Gallbladder",0.0,0.0,0.0,0.0,7,31230113
+"Female","Black","50-54 years","Other Biliary",0.0,0.0,0.0,0.0,4,31230113
+"Female","Black","50-54 years","Pancreas",0.2,0.0,0.2,0.3,74,31230113
+"Female","Black","50-54 years","Retroperitoneum",0.0,0.0,0.0,0.0,5,31230113
+"Female","Black","50-54 years","Peritoneum, Omentum and Mesentery",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","50-54 years","Other Digestive Organs",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","50-54 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","50-54 years","Larynx",0.0,0.0,0.0,0.1,15,31230113
+"Female","Black","50-54 years","Lung and Bronchus",1.2,0.1,1.0,1.3,361,31230113
+"Female","Black","50-54 years","Pleura",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","50-54 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","50-54 years","Bones and Joints",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","50-54 years","Soft Tissue including Heart",0.0,0.0,0.0,0.1,13,31230113
+"Female","Black","50-54 years","Melanoma of the Skin",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","50-54 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","50-54 years","Breast",1.5,0.1,1.3,1.6,462,31230113
+"Female","Black","50-54 years","Cervix Uteri",0.2,0.0,0.1,0.2,52,31230113
+"Female","Black","50-54 years","Corpus Uteri",0.2,0.0,0.1,0.2,54,31230113
+"Female","Black","50-54 years","Uterus, NOS",0.0,0.0,0.0,0.1,9,31230113
+"Female","Black","50-54 years","Ovary",0.2,0.0,0.1,0.2,47,31230113
+"Female","Black","50-54 years","Vagina",0.0,0.0,0.0,0.0,4,31230113
+"Female","Black","50-54 years","Vulva",0.0,0.0,0.0,0.1,9,31230113
+"Female","Black","50-54 years","Other Female Genital Organs",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","50-54 years","Prostate",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","50-54 years","Testis",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","50-54 years","Penis",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","50-54 years","Other Male Genital Organs",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","50-54 years","Urinary Bladder",0.0,0.0,0.0,0.1,12,31230113
+"Female","Black","50-54 years","Kidney and Renal Pelvis",0.1,0.0,0.1,0.2,38,31230113
+"Female","Black","50-54 years","Ureter",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","50-54 years","Other Urinary Organs",0.0,0.0,0.0,0.0,5,31230113
+"Female","Black","50-54 years","Eye and Orbit",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","50-54 years","Brain and Other Nervous System",0.1,0.0,0.0,0.1,24,31230113
+"Female","Black","50-54 years","Thyroid",0.0,0.0,0.0,0.0,5,31230113
+"Female","Black","50-54 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","50-54 years","Lymphoma",0.1,0.0,0.1,0.2,43,31230113
+"Female","Black","50-54 years","Myeloma",0.2,0.0,0.1,0.2,59,31230113
+"Female","Black","50-54 years","Leukemia",0.1,0.0,0.1,0.1,31,31230113
+"Female","Black","50-54 years","Mesothelioma",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","50-54 years","Kaposi Sarcoma",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","60-64 years","Lip",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","60-64 years","Tongue",0.0,0.0,0.0,0.1,9,31230113
+"Female","Black","60-64 years","Salivary Gland",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","60-64 years","Floor of Mouth",0.0,0.0,0.0,0.0,6,31230113
+"Female","Black","60-64 years","Gum and Other Mouth",0.0,0.0,0.0,0.0,7,31230113
+"Female","Black","60-64 years","Nasopharynx",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","60-64 years","Tonsil",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","60-64 years","Oropharynx",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","60-64 years","Hypopharynx",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","60-64 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","60-64 years","Esophagus",0.1,0.0,0.1,0.2,45,31230113
+"Female","Black","60-64 years","Stomach",0.2,0.0,0.1,0.2,55,31230113
+"Female","Black","60-64 years","Small Intestine",0.1,0.0,0.0,0.1,16,31230113
+"Female","Black","60-64 years","Colon and Rectum",0.9,0.1,0.8,1.0,278,31230113
+"Female","Black","60-64 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.0,4,31230113
+"Female","Black","60-64 years","Liver",0.1,0.0,0.1,0.1,25,31230113
+"Female","Black","60-64 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","60-64 years","Gallbladder",0.0,0.0,0.0,0.1,15,31230113
+"Female","Black","60-64 years","Other Biliary",0.0,0.0,0.0,0.1,11,31230113
+"Female","Black","60-64 years","Pancreas",0.4,0.0,0.3,0.5,123,31230113
+"Female","Black","60-64 years","Retroperitoneum",0.0,0.0,0.0,0.0,4,31230113
+"Female","Black","60-64 years","Peritoneum, Omentum and Mesentery",0.0,0.0,0.0,0.0,5,31230113
+"Female","Black","60-64 years","Other Digestive Organs",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","60-64 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","60-64 years","Larynx",0.1,0.0,0.0,0.1,17,31230113
+"Female","Black","60-64 years","Lung and Bronchus",1.7,0.1,1.6,1.9,545,31230113
+"Female","Black","60-64 years","Pleura",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","60-64 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","60-64 years","Bones and Joints",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","60-64 years","Soft Tissue including Heart",0.0,0.0,0.0,0.1,10,31230113
+"Female","Black","60-64 years","Melanoma of the Skin",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","60-64 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","60-64 years","Breast",1.1,0.1,1.0,1.2,336,31230113
+"Female","Black","60-64 years","Cervix Uteri",0.2,0.0,0.1,0.2,48,31230113
+"Female","Black","60-64 years","Corpus Uteri",0.4,0.0,0.3,0.5,124,31230113
+"Female","Black","60-64 years","Uterus, NOS",0.0,0.0,0.0,0.1,12,31230113
+"Female","Black","60-64 years","Ovary",0.3,0.0,0.2,0.4,91,31230113
+"Female","Black","60-64 years","Vagina",0.0,0.0,0.0,0.1,8,31230113
+"Female","Black","60-64 years","Vulva",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","60-64 years","Other Female Genital Organs",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","60-64 years","Prostate",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","60-64 years","Testis",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","60-64 years","Penis",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","60-64 years","Other Male Genital Organs",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","60-64 years","Urinary Bladder",0.1,0.0,0.1,0.1,31,31230113
+"Female","Black","60-64 years","Kidney and Renal Pelvis",0.1,0.0,0.1,0.2,44,31230113
+"Female","Black","60-64 years","Ureter",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","60-64 years","Other Urinary Organs",0.0,0.0,0.0,0.0,6,31230113
+"Female","Black","60-64 years","Eye and Orbit",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","60-64 years","Brain and Other Nervous System",0.1,0.0,0.0,0.1,16,31230113
+"Female","Black","60-64 years","Thyroid",0.0,0.0,0.0,0.1,8,31230113
+"Female","Black","60-64 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","60-64 years","Lymphoma",0.1,0.0,0.1,0.2,36,31230113
+"Female","Black","60-64 years","Myeloma",0.2,0.0,0.2,0.3,71,31230113
+"Female","Black","60-64 years","Leukemia",0.1,0.0,0.1,0.2,36,31230113
+"Female","Black","60-64 years","Mesothelioma",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","60-64 years","Kaposi Sarcoma",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","70-74 years","Lip",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","70-74 years","Tongue",0.0,0.0,0.0,0.0,6,31230113
+"Female","Black","70-74 years","Salivary Gland",0.0,0.0,0.0,0.0,7,31230113
+"Female","Black","70-74 years","Floor of Mouth",0.0,0.0,0.0,0.0,4,31230113
+"Female","Black","70-74 years","Gum and Other Mouth",0.0,0.0,0.0,0.0,6,31230113
+"Female","Black","70-74 years","Nasopharynx",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","70-74 years","Tonsil",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","70-74 years","Oropharynx",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","70-74 years","Hypopharynx",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","70-74 years","Other Oral Cavity and Pharynx",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","70-74 years","Esophagus",0.2,0.0,0.1,0.2,47,31230113
+"Female","Black","70-74 years","Stomach",0.3,0.0,0.2,0.3,85,31230113
+"Female","Black","70-74 years","Small Intestine",0.0,0.0,0.0,0.1,14,31230113
+"Female","Black","70-74 years","Colon and Rectum",1.2,0.1,1.1,1.3,369,31230113
+"Female","Black","70-74 years","Anus, Anal Canal and Anorectum",0.0,0.0,0.0,0.0,4,31230113
+"Female","Black","70-74 years","Liver",0.1,0.0,0.1,0.2,41,31230113
+"Female","Black","70-74 years","Intrahepatic Bile Duct",0.0,0.0,0.0,0.0,4,31230113
+"Female","Black","70-74 years","Gallbladder",0.0,0.0,0.0,0.1,14,31230113
+"Female","Black","70-74 years","Other Biliary",0.0,0.0,0.0,0.1,14,31230113
+"Female","Black","70-74 years","Pancreas",0.6,0.0,0.5,0.7,188,31230113
+"Female","Black","70-74 years","Retroperitoneum",0.0,0.0,0.0,0.0,4,31230113
+"Female","Black","70-74 years","Peritoneum, Omentum and Mesentery",0.0,0.0,0.0,0.0,6,31230113
+"Female","Black","70-74 years","Other Digestive Organs",0.0,0.0,0.0,0.1,12,31230113
+"Female","Black","70-74 years","Nose, Nasal Cavity and Middle Ear",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","70-74 years","Larynx",0.0,0.0,0.0,0.1,14,31230113
+"Female","Black","70-74 years","Lung and Bronchus",2.1,0.1,1.9,2.3,655,31230113
+"Female","Black","70-74 years","Pleura",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","70-74 years","Trachea, Mediastinum and Other Respiratory Organs",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","70-74 years","Bones and Joints",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","70-74 years","Soft Tissue including Heart",0.0,0.0,0.0,0.1,12,31230113
+"Female","Black","70-74 years","Melanoma of the Skin",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","70-74 years","Other Non-Epithelial Skin",0.0,0.0,0.0,0.0,3,31230113
+"Female","Black","70-74 years","Breast",1.2,0.1,1.0,1.3,363,31230113
+"Female","Black","70-74 years","Cervix Uteri",0.1,0.0,0.1,0.2,42,31230113
+"Female","Black","70-74 years","Corpus Uteri",0.4,0.0,0.4,0.5,137,31230113
+"Female","Black","70-74 years","Uterus, NOS",0.0,0.0,0.0,0.1,11,31230113
+"Female","Black","70-74 years","Ovary",0.3,0.0,0.2,0.3,85,31230113
+"Female","Black","70-74 years","Vagina",0.0,0.0,0.0,0.1,10,31230113
+"Female","Black","70-74 years","Vulva",0.0,0.0,0.0,0.1,9,31230113
+"Female","Black","70-74 years","Other Female Genital Organs",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","70-74 years","Prostate",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","70-74 years","Testis",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","70-74 years","Penis",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","70-74 years","Other Male Genital Organs",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","70-74 years","Urinary Bladder",0.2,0.0,0.2,0.3,71,31230113
+"Female","Black","70-74 years","Kidney and Renal Pelvis",0.2,0.0,0.1,0.2,58,31230113
+"Female","Black","70-74 years","Ureter",0.0,0.0,0.0,0.0,1,31230113
+"Female","Black","70-74 years","Other Urinary Organs",0.0,0.0,0.0,0.0,5,31230113
+"Female","Black","70-74 years","Eye and Orbit",0.0,NA,0.0,0.0,0,31230113
+"Female","Black","70-74 years","Brain and Other Nervous System",0.1,0.0,0.0,0.1,16,31230113
+"Female","Black","70-74 years","Thyroid",0.0,0.0,0.0,0.1,12,31230113
+"Female","Black","70-74 years","Other Endocrine including Thymus",0.0,0.0,0.0,0.0,2,31230113
+"Female","Black","70-74 years","Lymphoma",0.2,0.0,0.2,0.3,70,31230113
+"Female","Black","70-74 years","Myeloma",0.3,0.0,0.3,0.4,106,31230113
+"Female","Black","70-74 years","Leukemia",0.2,0.0,0.2,0.3,64,31230113
+"Female","Black","70-74 years","Mesothelioma",0.0,0.0,0.0,0.0,4,31230113
+"Female","Black","70-74 years","Kaposi Sarcoma",0.0,NA,0.0,0.0,0,31230113

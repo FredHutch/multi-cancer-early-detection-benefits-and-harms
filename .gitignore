@@ -1,6 +1,7 @@
 .*.sw*
 .*.tmp.R
 plots/*
+results/*
 data/table*
 data/supplemental_table*
 data/sensitivity*
