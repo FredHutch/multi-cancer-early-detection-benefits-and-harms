@@ -9,13 +9,14 @@ library(tidyverse)
 library(here)
 
 #datestamp <- '2021-03-26'
-datestamp <- '2021-05-13'
+#datestamp <- '2021-05-13'
+datestamp <- '2021-07-23'
 
 ##################################################
 # Specify filenames for SEER data and target cancers
 ##################################################
 fset <- tibble(incfile='seer_incidence_2000-2002_group=5_extended.csv',
-               ibmfile=str_glue('seer_ibm_2000-2002_followup={c(10, 15)}_extended.csv'),
+               ibmfile=str_glue('seer_ibm_2000-2002_followup={c(5, 10, 15)}_extended.csv'),
                cancersfile='cancers_2021-03-26.csv')
 
 ##################################################
@@ -37,13 +38,13 @@ read_data <- function(filename, interval=5, radix=1e5){
                                 Diagnosis.Rate=Rate,
                                 Diagnosis.Lower=Lower,
                                 Diagnosis.Upper=Upper)
-        # convert rate (lower, upper) to counts
+        # convert rate (lower, upper) to count
         dset <- dset %>% mutate(Diagnosis.Rate=Diagnosis.Rate*Population/radix,
                                 Diagnosis.Lower=Diagnosis.Lower*Population/radix,
                                 Diagnosis.Upper=Diagnosis.Upper*Population/radix)
         # scale population by the length of the age interval
         dset <- dset %>% mutate(Population=Population/interval)
-        # convert rate (lower, upper) to rates
+        # convert count (lower, upper) to rate
         dset <- dset %>% mutate(Diagnosis.Rate=Diagnosis.Rate/Population,
                                 Diagnosis.Lower=Diagnosis.Lower/Population,
                                 Diagnosis.Upper=Diagnosis.Upper/Population)
@@ -52,7 +53,7 @@ read_data <- function(filename, interval=5, radix=1e5){
                                 Death.Rate=Rate,
                                 Death.Lower=Lower,
                                 Death.Upper=Upper)
-        # convert rate (lower, upper) to counts
+        # convert rate (lower, upper) to count
         dset <- dset %>% mutate(Death.Rate=Death.Rate*Population/radix,
                                 Death.Lower=Death.Lower*Population/radix,
                                 Death.Upper=Death.Upper*Population/radix)
@@ -93,7 +94,7 @@ control <- function(fset, interval=5, radix=1e5, saveit=FALSE){
     cset <- read_cancers(fset$cancersfile)
     dset <- left_join(cset, dset, by='Site')
     if(saveit){
-        followup <- str_extract(fset$ibmfile, 'followup=(10|15)')
+        followup <- str_extract(fset$ibmfile, 'followup=(5|10|15)')
         outfile <- str_glue('seer_merged_2000-2002_{followup}_extended_{datestamp}.csv')
         write_csv(dset, here('data', outfile))
     }
