@@ -435,7 +435,7 @@ pset <- tribble(~site, ~sensitivity, ~localization,
                 'Ovary',      0.67, 0.96,
                 'Pancreas',   0.78, 0.79,
                 'Liver',      0.68, 0.72)
-pset <- pset %>% mutate(marginal=sensitivity*localization
+pset <- pset %>% mutate(marginal=sensitivity*localization,
                         effect=0.1/marginal)
 sset <- full_join(sset, pset, by='site')
 
